@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Top 10 Singapore Food — Voted by Community</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #C0392B;
+    --red-light: #fdf0ef;
+    --gold: #B8860B;
+    --silver: #7a7a7a;
+    --bronze: #8B4513;
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --border: #e8e4de;
+    --text: #1a1a1a;
+    --muted: #6b6660;
+    --hint: #a09a94;
+    --success: #2d6a4f;
+    --success-bg: #eaf4ee;
+    --info-bg: #eef4fb;
+    --info: #1a4f8a;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--red);
+    color: white;
+    padding: 28px 24px 24px;
+    text-align: center;
+  }
+
+  header h1 {
+    font-family: 'Instrument Serif', serif;
+    font-size: clamp(22px, 5vw, 34px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  header p {
+    font-size: 14px;
+    opacity: 0.85;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 20px 16px 60px;
+  }
+
+  .votes-banner {
+    background: var(--info-bg);
+    border: 1px solid #c8ddf5;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .votes-banner .left {
+    font-size: 14px;
+    color: var(--info);
+  }
+
+  .votes-banner .left strong { font-weight: 500; }
+
+  .votes-banner .pips {
+    display: flex;
+    gap: 4px;
+  }
+
+  .pip {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: #c8ddf5;
+    transition: background 0.2s;
+  }
+
+  .pip.used { background: var(--info); }
+
+  .submit-bar {
+    display: none;
+    background: var(--success-bg);
+    border: 1px solid #a8d5ba;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-bottom: 18px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .submit-bar.visible { display: flex; }
+
+  .submit-bar span { font-size: 14px; color: var(--success); }
+
+  .submit-btn {
+    background: var(--success);
+    color: white;
+    border: none;
+    padding: 9px 20px;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.15s;
+  }
+
+  .submit-btn:hover { opacity: 0.88; }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  thead th {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--hint);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    background: #faf9f7;
+  }
+
+  thead th.r { text-align: right; }
+  thead th.c { text-align: center; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #faf9f7; }
+
+  td {
+    padding: 11px 14px;
+    vertical-align: middle;
+  }
+
+  .rank-cell {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--hint);
+    width: 32px;
+    text-align: center;
+  }
+
+  .rank-cell.gold { color: var(--gold); }
+  .rank-cell.silver { color: var(--silver); }
+  .rank-cell.bronze { color: var(--bronze); }
+
+  .dish-cell .name {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+  }
+
+  .dish-cell .desc {
+    font-size: 12px;
+    color: var(--hint);
+    margin-top: 1px;
+  }
+
+  .bar-cell { width: 90px; }
+
+  .bar-bg {
+    height: 5px;
+    background: var(--border);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+
+  .bar-fill {
+    height: 5px;
+    background: var(--red);
+    border-radius: 3px;
+    opacity: 0.5;
+    transition: width 0.4s ease;
+  }
+
+  .count-cell {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+    width: 70px;
+  }
+
+  .vote-cell {
+    text-align: right;
+    width: 100px;
+  }
+
+  .vctrl {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .vbtn {
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font-size: 16px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: border-color 0.15s, background 0.15s;
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .vbtn:hover:not(:disabled) {
+    border-color: var(--red);
+    background: var(--red-light);
+    color: var(--red);
+  }
+
+  .vbtn:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+
+  .vnum {
+    font-size: 14px;
+    font-weight: 500;
+    min-width: 18px;
+    text-align: center;
+    color: var(--text);
+  }
+
+  .vnum.active { color: var(--red); }
+
+  .link-cell {
+    width: 80px;
+    text-align: right;
+  }
+
+  .view-link {
+    font-size: 12px;
+    color: var(--red);
+    text-decoration: none;
+    white-space: nowrap;
+    opacity: 0.8;
+    transition: opacity 0.15s;
+  }
+
+  .view-link:hover { opacity: 1; }
+
+  .voted-row td { background: #fefaf9; }
+  .voted-badge {
+    font-size: 11px;
+    background: var(--red-light);
+    color: var(--red);
+    padding: 2px 7px;
+    border-radius: 99px;
+    border: 1px solid #f0c8c4;
+  }
+
+  .footer-note {
+    text-align: center;
+    font-size: 12px;
+    color: var(--hint);
+    margin-top: 20px;
+  }
+
+  .loading-row td {
+    text-align: center;
+    padding: 40px;
+    color: var(--hint);
+    font-size: 14px;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: #1a1a1a;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 99px;
+    font-size: 14px;
+    transition: transform 0.3s ease;
+    z-index: 100;
+    white-space: nowrap;
+  }
+
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 600px) {
+    .bar-cell, .count-cell { display: none; }
+    .votes-banner .pips { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Top 10 Singapore Food<br><em>Voted by Community</em></h1>
+  <p>Vote for your favourite dishes · click any dish to see the top 10 restaurants</p>
+</header>
+
+<div class="container">
+
+  <div class="votes-banner">
+    <div class="left">You have <strong id="votes-left">10</strong> votes left for dish categories</div>
+    <div class="pips" id="pips-container"></div>
+  </div>
+
+  <div class="submit-bar" id="submit-bar">
+    <span>You have unsaved votes — confirm to lock them in!</span>
+    <button class="submit-btn" id="submit-btn" onclick="submitVotes()">Confirm my votes</button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th class="c">#</th>
+          <th>Dish</th>
+          <th class="c bar-cell">Popularity</th>
+          <th class="r count-cell">Votes</th>
+          <th class="r">Your vote</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody id="table-body">
+        <tr class="loading-row"><td colspan="6">Loading dishes…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p class="footer-note" id="footer-note"></p>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ── CONFIG ── replace these two lines with your own values from Supabase
+  const SUPABASE_URL = 'https://xlbgijjtxbflhkjftene.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_1tTdNWd1N0n9w3ElrCynNw_ia1JWbc6';
+
+  const TOTAL_VOTES = 10;
+  const BROWSER_ID_KEY = 'sg_food_browser_id';
+  const PENDING_KEY = 'sg_food_pending_category';
+  const SUBMITTED_KEY = 'sg_food_submitted_category';
+
+  // get or create a unique id for this browser
+  function getBrowserId() {
+    let id = localStorage.getItem(BROWSER_ID_KEY);
+    if (!id) {
+      id = 'u_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      localStorage.setItem(BROWSER_ID_KEY, id);
+    }
+    return id;
+  }
+
+async function api(path, options = {}) {
+    const headers = {
+      'apikey': SUPABASE_KEY,
+      'Authorization': 'Bearer ' + SUPABASE_KEY,
+      'Content-Type': 'application/json',
+      'Prefer': options.prefer || 'return=minimal'
+    };
+    if (options.headers) {
+      Object.assign(headers, options.headers);
+    }
+    const fetchOptions = { method: options.method || 'GET', headers };
+    if (options.body) fetchOptions.body = options.body;
+    const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, fetchOptions);
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error('Supabase error:', res.status, errText);
+      throw new Error(errText);
+    }
+    const text = await res.text();
+    return text ? JSON.parse(text) : null;
+  }
+
+  // pending votes = { categoryId: votesGiven } — not yet submitted
+  function getPending() {
+    try { return JSON.parse(localStorage.getItem(PENDING_KEY) || '{}'); }
+    catch { return {}; }
+  }
+
+  function savePending(p) {
+    localStorage.setItem(PENDING_KEY, JSON.stringify(p));
+  }
+
+  // submitted votes = { categoryId: votesGiven } — already locked in
+  function getSubmitted() {
+    try { return JSON.parse(localStorage.getItem(SUBMITTED_KEY) || '{}'); }
+    catch { return {}; }
+  }
+
+  function saveSubmitted(s) {
+    localStorage.setItem(SUBMITTED_KEY, JSON.stringify(s));
+  }
+
+  function pendingTotal() {
+    return Object.values(getPending()).reduce((a, b) => a + b, 0);
+  }
+
+  function submittedTotal() {
+    return Object.values(getSubmitted()).reduce((a, b) => a + b, 0);
+  }
+
+  function votesUsed() {
+    return pendingTotal() + submittedTotal();
+  }
+
+  function votesRemaining() {
+    return TOTAL_VOTES - votesUsed();
+  }
+
+  let categories = [];
+  let maxVotes = 0;
+
+  async function loadCategories() {
+    try {
+      categories = await api('categories?select=*&order=total_votes.desc', {
+        headers: { 'Prefer': 'return=representation' }
+      });
+      maxVotes = categories.length ? Math.max(...categories.map(c => c.total_votes || 0)) : 1;
+      renderTable();
+    } catch (e) {
+      document.getElementById('table-body').innerHTML =
+        '<tr class="loading-row"><td colspan="6">Could not load data. Check your Supabase URL and key.</td></tr>';
+    }
+  }
+
+  function renderTable() {
+    const pending = getPending();
+    const submitted = getSubmitted();
+    const remaining = votesRemaining();
+    const used = votesUsed();
+
+    // update banner
+    document.getElementById('votes-left').textContent = remaining;
+    renderPips(used);
+
+    // show/hide submit bar
+    const hasPending = pendingTotal() > 0;
+    document.getElementById('submit-bar').classList.toggle('visible', hasPending);
+
+    const tbody = document.getElementById('table-body');
+    if (!categories.length) {
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="6">No dishes found.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = categories.map((cat, i) => {
+      const myPending = pending[cat.id] || 0;
+      const mySubmitted = submitted[cat.id] || 0;
+      const myTotal = myPending + mySubmitted;
+      const pct = maxVotes > 0 ? Math.round((cat.total_votes / maxVotes) * 100) : 0;
+      const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
+      const isVoted = myTotal > 0;
+
+      const minusDisabled = myPending <= 0 || mySubmitted > 0;
+      const plusDisabled = remaining <= 0;
+
+      return `<tr class="${isVoted ? 'voted-row' : ''}" id="row-${cat.id}">
+        <td class="rank-cell ${rankClass}">${i + 1}</td>
+        <td class="dish-cell">
+          <div class="name">${cat.name}</div>
+          <div class="desc">${cat.description || ''}</div>
+        </td>
+        <td class="bar-cell">
+          <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+        </td>
+        <td class="count-cell">${(cat.total_votes || 0).toLocaleString()}</td>
+        <td class="vote-cell">
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(${cat.id}, -1)" ${minusDisabled ? 'disabled' : ''} title="Remove vote">−</button>
+            <span class="vnum ${myPending > 0 ? 'active' : ''}" id="vnum-${cat.id}">${myTotal}</span>
+            <button class="vbtn" onclick="changeVote(${cat.id}, 1)" ${plusDisabled ? 'disabled' : ''} title="Add vote">+</button>
+            ${mySubmitted > 0 ? `<span class="voted-badge">locked</span>` : ''}
+          </div>
+        </td>
+        <td class="link-cell"><a class="view-link" href="category.html?slug=${cat.slug}">Top 10 →</a></td>
+      </tr>`;
+    }).join('');
+
+    document.getElementById('footer-note').textContent =
+      `${categories.length} dishes · sorted by community votes`;
+  }
+
+  function renderPips(used) {
+    const container = document.getElementById('pips-container');
+    container.innerHTML = Array.from({ length: TOTAL_VOTES }, (_, i) =>
+      `<div class="pip ${i < used ? 'used' : ''}"></div>`
+    ).join('');
+  }
+
+  function changeVote(catId, delta) {
+    const pending = getPending();
+    const submitted = getSubmitted();
+    const current = pending[catId] || 0;
+    const alreadySubmitted = submitted[catId] || 0;
+
+    // can't remove submitted votes
+    if (delta < 0 && alreadySubmitted > 0) return;
+
+    const newVal = current + delta;
+    if (newVal < 0) return;
+    if (delta > 0 && votesRemaining() <= 0) return;
+
+    if (newVal === 0) delete pending[catId];
+    else pending[catId] = newVal;
+
+    savePending(pending);
+    renderTable();
+  }
+
+  async function submitVotes() {
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+
+    const pending = getPending();
+    const submitted = getSubmitted();
+    const browserId = getBrowserId();
+
+    try {
+      const inserts = Object.entries(pending).map(([id, votes]) => ({
+        browser_id: browserId,
+        target_type: 'category',
+        target_id: parseInt(id),
+        votes_given: votes
+      }));
+
+      await api('votes', {
+        method: 'POST',
+        body: JSON.stringify(inserts),
+        prefer: 'return=minimal'
+      });
+
+      // update total_votes on each category
+      for (const [id, votes] of Object.entries(pending)) {
+        const cat = categories.find(c => c.id === parseInt(id));
+        if (cat) {
+          await api(`categories?id=eq.${id}`, {
+            method: 'PATCH',
+            body: JSON.stringify({ total_votes: (cat.total_votes || 0) + votes }),
+            prefer: 'return=minimal'
+          });
+          cat.total_votes = (cat.total_votes || 0) + votes;
+          submitted[id] = (submitted[id] || 0) + votes;
+        }
+      }
+
+      saveSubmitted(submitted);
+      savePending({});
+      maxVotes = categories.length ? Math.max(...categories.map(c => c.total_votes || 0)) : 1;
+      categories.sort((a, b) => b.total_votes - a.total_votes);
+      renderTable();
+      showToast('Votes saved!');
+    } catch (e) {
+      showToast('Error saving votes. Please try again.');
+      btn.disabled = false;
+      btn.textContent = 'Confirm my votes';
+    }
+  }
+
+  function showToast(msg) {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  loadCategories();
+</script>
+</body>
+</html>
