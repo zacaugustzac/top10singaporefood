@@ -182,33 +182,18 @@
   .rank-cell.silver { color: var(--silver); }
   .rank-cell.bronze { color: var(--bronze); }
 
+  .dish-cell {
+    overflow: hidden;
+    max-width: 0;
+  }
+
   .dish-cell .name {
     font-size: 14px;
     font-weight: 500;
     color: var(--text);
-  }
-
-  .dish-cell .desc {
-    font-size: 12px;
-    color: var(--hint);
-    margin-top: 1px;
-  }
-
-  .bar-cell { width: 90px; }
-
-  .bar-bg {
-    height: 5px;
-    background: var(--border);
-    border-radius: 3px;
+    white-space: nowrap;
     overflow: hidden;
-  }
-
-  .bar-fill {
-    height: 5px;
-    background: var(--red);
-    border-radius: 3px;
-    opacity: 0.5;
-    transition: width 0.4s ease;
+    text-overflow: ellipsis;
   }
 
   .count-cell {
@@ -327,7 +312,6 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   @media (max-width: 600px) {
-    .count-cell { display: none; }
     .votes-banner .pips { display: none; }
 
     header { padding: 20px 16px 18px; }
@@ -376,7 +360,6 @@
         <tr>
           <th class="c">#</th>
           <th>Dish</th>
-          <th class="c bar-cell">Popularity</th>
           <th class="r count-cell">Votes</th>
           <th class="r">Your vote</th>
           <th></th>
@@ -472,14 +455,12 @@ async function api(path, options = {}) {
   }
 
   let categories = [];
-  let maxVotes = 0;
 
   async function loadCategories() {
     try {
       categories = await api('categories?select=*&order=total_votes.desc', {
         headers: { 'Prefer': 'return=representation' }
       });
-      maxVotes = categories.length ? Math.max(...categories.map(c => c.total_votes || 0)) : 1;
       renderTable();
     } catch (e) {
       document.getElementById('table-body').innerHTML =
@@ -511,7 +492,6 @@ async function api(path, options = {}) {
       const myPending = pending[cat.id] || 0;
       const mySubmitted = submitted[cat.id] || 0;
       const myTotal = myPending + mySubmitted;
-      const pct = maxVotes > 0 ? Math.round((cat.total_votes / maxVotes) * 100) : 0;
       const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
       const isVoted = myTotal > 0;
 
@@ -522,9 +502,6 @@ async function api(path, options = {}) {
         <td class="rank-cell ${rankClass}">${i + 1}</td>
         <td class="dish-cell">
           <div class="name">${cat.name}</div>
-        </td>
-        <td class="bar-cell">
-          <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
         </td>
         <td class="count-cell">${(cat.total_votes || 0).toLocaleString()}</td>
         <td class="vote-cell">
@@ -608,7 +585,6 @@ async function api(path, options = {}) {
 
       saveSubmitted(submitted);
       savePending({});
-      maxVotes = categories.length ? Math.max(...categories.map(c => c.total_votes || 0)) : 1;
       categories.sort((a, b) => b.total_votes - a.total_votes);
       renderTable();
       showToast('Votes saved!');

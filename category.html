@@ -177,33 +177,27 @@
   .rank-cell.silver { color: var(--silver); }
   .rank-cell.bronze { color: var(--bronze); }
 
+  .rest-cell {
+    overflow: hidden;
+    max-width: 0;
+  }
+
   .rest-cell .name {
     font-size: 14px;
     font-weight: 500;
     color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .rest-cell .addr {
     font-size: 12px;
     color: var(--hint);
     margin-top: 2px;
-  }
-
-  .bar-cell { width: 90px; }
-
-  .bar-bg {
-    height: 5px;
-    background: var(--border);
-    border-radius: 3px;
+    white-space: nowrap;
     overflow: hidden;
-  }
-
-  .bar-fill {
-    height: 5px;
-    background: var(--red);
-    border-radius: 3px;
-    opacity: 0.5;
-    transition: width 0.4s ease;
+    text-overflow: ellipsis;
   }
 
   .count-cell {
@@ -331,7 +325,6 @@
   .all-voted-note.visible { display: block; }
 
   @media (max-width: 600px) {
-    .count-cell { display: none; }
     .pips { display: none; }
 
     header { padding: 16px; }
@@ -382,7 +375,6 @@
         <tr>
           <th class="c">#</th>
           <th>Restaurant</th>
-          <th class="c bar-cell">Popularity</th>
           <th class="r count-cell">Votes</th>
           <th class="r">Your vote</th>
         </tr>
@@ -443,7 +435,6 @@
   let slug = '';
   let categoryId = null;
   let restaurants = [];
-  let maxVotes = 0;
 
   function getPending() {
     try { return JSON.parse(localStorage.getItem(pendingKey(slug)) || '{}'); }
@@ -504,7 +495,6 @@
     restaurants = await api(
       `restaurants?category_id=eq.${categoryId}&select=*&order=total_votes.desc`
     );
-    maxVotes = restaurants.length ? Math.max(...restaurants.map(r => r.total_votes || 0)) : 1;
     renderTable();
   }
 
@@ -539,7 +529,6 @@
       const myPending = pending[r.id] || 0;
       const mySubmitted = submitted[r.id] || 0;
       const myTotal = myPending + mySubmitted;
-      const pct = maxVotes > 0 ? Math.round(((r.total_votes || 0) / maxVotes) * 100) : 0;
       const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
       const isVoted = myTotal > 0;
       const minusDisabled = myPending <= 0;
@@ -550,9 +539,6 @@
         <td class="rest-cell">
           <div class="name">${r.name}</div>
           ${r.address ? `<div class="addr">${r.address}</div>` : ''}
-        </td>
-        <td class="bar-cell">
-          <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
         </td>
         <td class="count-cell">${(r.total_votes || 0).toLocaleString()}</td>
         <td class="vote-cell">
@@ -631,7 +617,6 @@
 
       saveSubmitted(submitted);
       savePending({});
-      maxVotes = restaurants.length ? Math.max(...restaurants.map(r => r.total_votes || 0)) : 1;
       restaurants.sort((a, b) => b.total_votes - a.total_votes);
       renderTable();
       showToast('Votes saved! Thank you 🙏');
