@@ -327,7 +327,7 @@
   .toast.show { transform: translateX(-50%) translateY(0); }
 
   @media (max-width: 600px) {
-    .bar-cell, .count-cell { display: none; }
+    .count-cell { display: none; }
     .votes-banner .pips { display: none; }
 
     header { padding: 20px 16px 18px; }
@@ -532,7 +532,6 @@ async function api(path, options = {}) {
             <button class="vbtn" onclick="changeVote(${cat.id}, -1)" ${minusDisabled ? 'disabled' : ''} title="Remove vote">−</button>
             <span class="vnum ${myPending > 0 ? 'active' : ''}" id="vnum-${cat.id}">${myTotal}</span>
             <button class="vbtn" onclick="changeVote(${cat.id}, 1)" ${plusDisabled ? 'disabled' : ''} title="Add vote">+</button>
-            ${mySubmitted > 0 ? `<span class="voted-badge">locked</span>` : ''}
           </div>
         </td>
         <td class="link-cell"><a class="view-link" href="category.html?slug=${cat.slug}">Top 10 →</a></td>

@@ -331,7 +331,7 @@
   .all-voted-note.visible { display: block; }
 
   @media (max-width: 600px) {
-    .bar-cell, .count-cell { display: none; }
+    .count-cell { display: none; }
     .pips { display: none; }
 
     header { padding: 16px; }
@@ -560,7 +560,6 @@
             <button class="vbtn" onclick="changeVote(${r.id}, -1)" ${minusDisabled ? 'disabled' : ''}>−</button>
             <span class="vnum ${myPending > 0 ? 'active' : ''}" id="vnum-${r.id}">${myTotal}</span>
             <button class="vbtn" onclick="changeVote(${r.id}, 1)" ${plusDisabled ? 'disabled' : ''}>+</button>
-            ${mySubmitted > 0 ? `<span class="voted-badge">${mySubmitted} locked</span>` : ''}
           </div>
         </td>
       </tr>`;
