@@ -43,7 +43,7 @@
 
   header h1 {
     font-family: 'Instrument Serif', serif;
-    font-size: clamp(22px, 5vw, 34px);
+    font-size: clamp(18px, 4vw, 26px);
     font-weight: 400;
     letter-spacing: -0.01em;
     line-height: 1.2;
@@ -51,7 +51,7 @@
   }
 
   header p {
-    font-size: 14px;
+    font-size: 12px;
     opacity: 0.85;
     max-width: 480px;
     margin: 0 auto;
@@ -143,12 +143,12 @@
   }
 
   thead th {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 500;
     color: var(--hint);
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    padding: 12px 14px;
+    padding: 10px 14px;
     border-bottom: 1px solid var(--border);
     text-align: left;
     background: #faf9f7;
@@ -188,7 +188,7 @@
   }
 
   .dish-cell .name {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 500;
     color: var(--text);
     white-space: nowrap;
@@ -197,31 +197,31 @@
   }
 
   .count-cell {
-    font-size: 13px;
+    font-size: 12px;
     color: var(--muted);
     text-align: right;
     white-space: nowrap;
-    width: 70px;
+    width: 60px;
   }
 
   .vote-cell {
     text-align: right;
-    width: 100px;
+    width: 80px;
   }
 
   .vctrl {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
   }
 
   .vbtn {
-    width: 26px; height: 26px;
+    width: 22px; height: 22px;
     border-radius: 50%;
     border: 1px solid var(--border);
     background: var(--bg);
     color: var(--text);
-    font-size: 16px;
+    font-size: 14px;
     line-height: 1;
     cursor: pointer;
     display: flex;
@@ -245,9 +245,9 @@
   }
 
   .vnum {
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
-    min-width: 18px;
+    min-width: 16px;
     text-align: center;
     color: var(--text);
   }
@@ -319,8 +319,8 @@
     td { padding: 10px 6px; }
     thead th { padding: 10px 6px; }
 
-    .vbtn { width: 40px; height: 40px; font-size: 20px; }
-    .vnum { font-size: 15px; min-width: 22px; }
+    .vbtn { width: 34px; height: 34px; font-size: 17px; }
+    .vnum { font-size: 13px; min-width: 18px; }
     .vote-cell { width: auto; }
 
     .link-cell { width: auto; }
@@ -358,7 +358,6 @@
     <table>
       <thead>
         <tr>
-          <th class="c">#</th>
           <th>Dish</th>
           <th class="r count-cell">Votes</th>
           <th class="r">Your vote</th>
@@ -366,7 +365,7 @@
         </tr>
       </thead>
       <tbody id="table-body">
-        <tr class="loading-row"><td colspan="6">Loading dishes…</td></tr>
+        <tr class="loading-row"><td colspan="4">Loading dishes…</td></tr>
       </tbody>
     </table>
   </div>
@@ -464,7 +463,7 @@ async function api(path, options = {}) {
       renderTable();
     } catch (e) {
       document.getElementById('table-body').innerHTML =
-        '<tr class="loading-row"><td colspan="6">Could not load data. Check your Supabase URL and key.</td></tr>';
+        '<tr class="loading-row"><td colspan="4">Could not load data. Check your Supabase URL and key.</td></tr>';
     }
   }
 
@@ -484,7 +483,7 @@ async function api(path, options = {}) {
 
     const tbody = document.getElementById('table-body');
     if (!categories.length) {
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="6">No dishes found.</td></tr>';
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="4">No dishes found.</td></tr>';
       return;
     }
 
@@ -492,14 +491,12 @@ async function api(path, options = {}) {
       const myPending = pending[cat.id] || 0;
       const mySubmitted = submitted[cat.id] || 0;
       const myTotal = myPending + mySubmitted;
-      const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
       const isVoted = myTotal > 0;
 
       const minusDisabled = myPending <= 0 || mySubmitted > 0;
       const plusDisabled = remaining <= 0;
 
       return `<tr class="${isVoted ? 'voted-row' : ''}" id="row-${cat.id}">
-        <td class="rank-cell ${rankClass}">${i + 1}</td>
         <td class="dish-cell">
           <div class="name">${cat.name}</div>
         </td>
