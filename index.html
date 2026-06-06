@@ -21,8 +21,6 @@
     --text: #1a1a1a;
     --muted: #6b6660;
     --hint: #a09a94;
-    --success: #2d6a4f;
-    --success-bg: #eaf4ee;
     --info-bg: #eef4fb;
     --info: #1a4f8a;
   }
@@ -97,39 +95,6 @@
   }
 
   .pip.used { background: var(--info); }
-
-  .submit-bar {
-    display: none;
-    background: var(--success-bg);
-    border: 1px solid #a8d5ba;
-    border-radius: 10px;
-    padding: 12px 16px;
-    margin-bottom: 18px;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .submit-bar.visible { display: flex; }
-
-  .submit-bar span { font-size: 14px; color: var(--success); }
-
-  .submit-btn {
-    background: var(--success);
-    color: white;
-    border: none;
-    padding: 9px 20px;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-
-  .submit-btn:hover { opacity: 0.88; }
-  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .table-wrap {
     background: var(--surface);
@@ -315,9 +280,6 @@
     .vbtn { width: 34px; height: 34px; font-size: 17px; }
     .vnum { font-size: 13px; min-width: 18px; }
     .vote-cell { width: auto; }
-
-    .submit-bar { flex-direction: column; align-items: stretch; }
-    .submit-btn { width: 100%; padding: 13px; font-size: 15px; text-align: center; }
   }
 </style>
 </head>
@@ -333,11 +295,6 @@
   <div class="votes-banner">
     <div class="left">You have <strong id="votes-left">10</strong> votes left for dish categories</div>
     <div class="pips" id="pips-container"></div>
-  </div>
-
-  <div class="submit-bar" id="submit-bar">
-    <span>You have unsaved votes — confirm to lock them in!</span>
-    <button class="submit-btn" id="submit-btn" onclick="submitVotes()">Confirm my votes</button>
   </div>
 
   <div class="table-wrap">
@@ -361,35 +318,20 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ── CONFIG ── replace these two lines with your own values from Supabase
   const SUPABASE_URL = 'https://xlbgijjtxbflhkjftene.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_1tTdNWd1N0n9w3ElrCynNw_ia1JWbc6';
 
   const TOTAL_VOTES = 10;
-  const BROWSER_ID_KEY = 'sg_food_browser_id';
-  const PENDING_KEY = 'sg_food_pending_category';
-  const SUBMITTED_KEY = 'sg_food_submitted_category';
+  const VOTES_KEY = 'sg_food_votes_category';
 
-  // get or create a unique id for this browser
-  function getBrowserId() {
-    let id = localStorage.getItem(BROWSER_ID_KEY);
-    if (!id) {
-      id = 'u_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-      localStorage.setItem(BROWSER_ID_KEY, id);
-    }
-    return id;
-  }
-
-async function api(path, options = {}) {
+  async function api(path, options = {}) {
     const headers = {
       'apikey': SUPABASE_KEY,
       'Authorization': 'Bearer ' + SUPABASE_KEY,
       'Content-Type': 'application/json',
       'Prefer': options.prefer || 'return=minimal'
     };
-    if (options.headers) {
-      Object.assign(headers, options.headers);
-    }
+    if (options.headers) Object.assign(headers, options.headers);
     const fetchOptions = { method: options.method || 'GET', headers };
     if (options.body) fetchOptions.body = options.body;
     const res = await fetch(SUPABASE_URL + '/rest/v1/' + path, fetchOptions);
@@ -402,41 +344,15 @@ async function api(path, options = {}) {
     return text ? JSON.parse(text) : null;
   }
 
-  // pending votes = { categoryId: votesGiven } — not yet submitted
-  function getPending() {
-    try { return JSON.parse(localStorage.getItem(PENDING_KEY) || '{}'); }
+  function getVotes() {
+    try { return JSON.parse(localStorage.getItem(VOTES_KEY) || '{}'); }
     catch { return {}; }
   }
 
-  function savePending(p) {
-    localStorage.setItem(PENDING_KEY, JSON.stringify(p));
-  }
+  function saveVotes(v) { localStorage.setItem(VOTES_KEY, JSON.stringify(v)); }
 
-  // submitted votes = { categoryId: votesGiven } — already locked in
-  function getSubmitted() {
-    try { return JSON.parse(localStorage.getItem(SUBMITTED_KEY) || '{}'); }
-    catch { return {}; }
-  }
-
-  function saveSubmitted(s) {
-    localStorage.setItem(SUBMITTED_KEY, JSON.stringify(s));
-  }
-
-  function pendingTotal() {
-    return Object.values(getPending()).reduce((a, b) => a + b, 0);
-  }
-
-  function submittedTotal() {
-    return Object.values(getSubmitted()).reduce((a, b) => a + b, 0);
-  }
-
-  function votesUsed() {
-    return pendingTotal() + submittedTotal();
-  }
-
-  function votesRemaining() {
-    return TOTAL_VOTES - votesUsed();
-  }
+  function votesUsed() { return Object.values(getVotes()).reduce((a, b) => a + b, 0); }
+  function votesRemaining() { return TOTAL_VOTES - votesUsed(); }
 
   let categories = [];
 
@@ -453,18 +369,12 @@ async function api(path, options = {}) {
   }
 
   function renderTable() {
-    const pending = getPending();
-    const submitted = getSubmitted();
+    const votes = getVotes();
     const remaining = votesRemaining();
     const used = votesUsed();
 
-    // update banner
     document.getElementById('votes-left').textContent = remaining;
     renderPips(used);
-
-    // show/hide submit bar
-    const hasPending = pendingTotal() > 0;
-    document.getElementById('submit-bar').classList.toggle('visible', hasPending);
 
     const tbody = document.getElementById('table-body');
     if (!categories.length) {
@@ -472,13 +382,10 @@ async function api(path, options = {}) {
       return;
     }
 
-    tbody.innerHTML = categories.map((cat, i) => {
-      const myPending = pending[cat.id] || 0;
-      const mySubmitted = submitted[cat.id] || 0;
-      const myTotal = myPending + mySubmitted;
-      const isVoted = myTotal > 0;
-
-      const minusDisabled = myPending <= 0 || mySubmitted > 0;
+    tbody.innerHTML = categories.map((cat) => {
+      const myVotes = votes[cat.id] || 0;
+      const isVoted = myVotes > 0;
+      const minusDisabled = myVotes <= 0;
       const plusDisabled = remaining <= 0;
 
       return `<tr class="${isVoted ? 'voted-row' : ''}" id="row-${cat.id}">
@@ -491,7 +398,7 @@ async function api(path, options = {}) {
         <td class="vote-cell">
           <div class="vctrl">
             <button class="vbtn" onclick="changeVote(${cat.id}, -1)" ${minusDisabled ? 'disabled' : ''} title="Remove vote">−</button>
-            <span class="vnum ${myPending > 0 ? 'active' : ''}" id="vnum-${cat.id}">${myTotal}</span>
+            <span class="vnum ${myVotes > 0 ? 'active' : ''}" id="vnum-${cat.id}">${myVotes}</span>
             <button class="vbtn" onclick="changeVote(${cat.id}, 1)" ${plusDisabled ? 'disabled' : ''} title="Add vote">+</button>
           </div>
         </td>
@@ -509,72 +416,36 @@ async function api(path, options = {}) {
     ).join('');
   }
 
-  function changeVote(catId, delta) {
-    const pending = getPending();
-    const submitted = getSubmitted();
-    const current = pending[catId] || 0;
-    const alreadySubmitted = submitted[catId] || 0;
+  async function changeVote(catId, delta) {
+    const votes = getVotes();
+    const current = votes[catId] || 0;
 
-    // can't remove submitted votes
-    if (delta < 0 && alreadySubmitted > 0) return;
-
-    const newVal = current + delta;
-    if (newVal < 0) return;
+    if (delta < 0 && current <= 0) return;
     if (delta > 0 && votesRemaining() <= 0) return;
 
-    if (newVal === 0) delete pending[catId];
-    else pending[catId] = newVal;
+    const newVal = current + delta;
+    if (newVal <= 0) delete votes[catId];
+    else votes[catId] = newVal;
 
-    savePending(pending);
-    renderTable();
-  }
+    saveVotes(votes);
 
-  async function submitVotes() {
-    const btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Saving…';
-
-    const pending = getPending();
-    const submitted = getSubmitted();
-    const browserId = getBrowserId();
-
-    try {
-      const inserts = Object.entries(pending).map(([id, votes]) => ({
-        browser_id: browserId,
-        target_type: 'category',
-        target_id: parseInt(id),
-        votes_given: votes
-      }));
-
-      await api('votes', {
-        method: 'POST',
-        body: JSON.stringify(inserts),
-        prefer: 'return=minimal'
-      });
-
-      // update total_votes on each category
-      for (const [id, votes] of Object.entries(pending)) {
-        const cat = categories.find(c => c.id === parseInt(id));
-        if (cat) {
-          await api(`categories?id=eq.${id}`, {
-            method: 'PATCH',
-            body: JSON.stringify({ total_votes: (cat.total_votes || 0) + votes }),
-            prefer: 'return=minimal'
-          });
-          cat.total_votes = (cat.total_votes || 0) + votes;
-          submitted[id] = (submitted[id] || 0) + votes;
-        }
-      }
-
-      saveSubmitted(submitted);
-      savePending({});
+    const cat = categories.find(c => c.id === catId);
+    if (cat) {
+      cat.total_votes = (cat.total_votes || 0) + delta;
       categories.sort((a, b) => b.total_votes - a.total_votes);
-      renderTable();
-      showToast('Votes saved!');
-    } catch (e) {
-      showToast('Error saving votes. Please try again.');
-      btn.disabled = false;
-      btn.textContent = 'Confirm my votes';
+    }
+
+    renderTable();
+
+    if (cat) {
+      try {
+        await api(`categories?id=eq.${catId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ total_votes: cat.total_votes }),
+        });
+      } catch (e) {
+        showToast('Error saving vote. Please try again.');
+      }
     }
   }
 

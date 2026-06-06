@@ -21,8 +21,6 @@
     --text: #1a1a1a;
     --muted: #6b6660;
     --hint: #a09a94;
-    --success: #2d6a4f;
-    --success-bg: #eaf4ee;
     --info-bg: #eef4fb;
     --info: #1a4f8a;
   }
@@ -98,38 +96,6 @@
   .pips { display: flex; gap: 4px; }
   .pip { width: 10px; height: 10px; border-radius: 50%; background: #c8ddf5; transition: background 0.2s; }
   .pip.used { background: var(--info); }
-
-  .submit-bar {
-    display: none;
-    background: var(--success-bg);
-    border: 1px solid #a8d5ba;
-    border-radius: 10px;
-    padding: 12px 16px;
-    margin-bottom: 18px;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-    flex-wrap: wrap;
-  }
-
-  .submit-bar.visible { display: flex; }
-  .submit-bar span { font-size: 14px; color: var(--success); }
-
-  .submit-btn {
-    background: var(--success);
-    color: white;
-    border: none;
-    padding: 9px 20px;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: opacity 0.15s;
-  }
-
-  .submit-btn:hover { opacity: 0.88; }
-  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .table-wrap {
     background: var(--surface);
@@ -336,9 +302,6 @@
     .vnum { font-size: 13px; min-width: 18px; }
     .vote-cell { width: auto; }
 
-    .submit-bar { flex-direction: column; align-items: stretch; }
-    .submit-btn { width: 100%; padding: 13px; font-size: 15px; text-align: center; }
-
     .all-voted-note { font-size: 14px; }
   }
 </style>
@@ -364,11 +327,6 @@
     You have used all your votes for this dish. Thank you for voting!
   </div>
 
-  <div class="submit-bar" id="submit-bar">
-    <span>You have unsaved votes — confirm to lock them in!</span>
-    <button class="submit-btn" id="submit-btn" onclick="submitVotes()">Confirm my votes</button>
-  </div>
-
   <div class="table-wrap">
     <table>
       <thead>
@@ -390,25 +348,12 @@
 <div class="toast" id="toast"></div>
 
 <script>
-  // ── CONFIG — same values as index.html ──
   const SUPABASE_URL = 'https://xlbgijjtxbflhkjftene.supabase.co';
   const SUPABASE_KEY = 'sb_publishable_1tTdNWd1N0n9w3ElrCynNw_ia1JWbc6';
 
   const TOTAL_VOTES = 10;
-  const BROWSER_ID_KEY = 'sg_food_browser_id';
 
-  // each dish gets its own pending/submitted keys so votes are tracked separately
-  function pendingKey(slug) { return 'sg_pending_rest_' + slug; }
-  function submittedKey(slug) { return 'sg_submitted_rest_' + slug; }
-
-  function getBrowserId() {
-    let id = localStorage.getItem(BROWSER_ID_KEY);
-    if (!id) {
-      id = 'u_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-      localStorage.setItem(BROWSER_ID_KEY, id);
-    }
-    return id;
-  }
+  function votesKey(slug) { return 'sg_votes_rest_' + slug; }
 
   async function api(path, options = {}) {
     const headers = {
@@ -430,31 +375,20 @@
     return text ? JSON.parse(text) : null;
   }
 
-  // ── state ──
   let slug = '';
   let categoryId = null;
   let restaurants = [];
 
-  function getPending() {
-    try { return JSON.parse(localStorage.getItem(pendingKey(slug)) || '{}'); }
+  function getVotes() {
+    try { return JSON.parse(localStorage.getItem(votesKey(slug)) || '{}'); }
     catch { return {}; }
   }
 
-  function savePending(p) { localStorage.setItem(pendingKey(slug), JSON.stringify(p)); }
+  function saveVotes(v) { localStorage.setItem(votesKey(slug), JSON.stringify(v)); }
 
-  function getSubmitted() {
-    try { return JSON.parse(localStorage.getItem(submittedKey(slug)) || '{}'); }
-    catch { return {}; }
-  }
-
-  function saveSubmitted(s) { localStorage.setItem(submittedKey(slug), JSON.stringify(s)); }
-
-  function pendingTotal() { return Object.values(getPending()).reduce((a, b) => a + b, 0); }
-  function submittedTotal() { return Object.values(getSubmitted()).reduce((a, b) => a + b, 0); }
-  function votesUsed() { return pendingTotal() + submittedTotal(); }
+  function votesUsed() { return Object.values(getVotes()).reduce((a, b) => a + b, 0); }
   function votesRemaining() { return TOTAL_VOTES - votesUsed(); }
 
-  // ── init ──
   async function init() {
     const params = new URLSearchParams(window.location.search);
     slug = params.get('slug');
@@ -467,7 +401,6 @@
     }
 
     try {
-      // load category info
       const cats = await api(`categories?slug=eq.${slug}&select=*`);
       if (!cats || cats.length === 0) {
         document.getElementById('page-title').textContent = 'Dish not found';
@@ -476,12 +409,10 @@
       const cat = cats[0];
       categoryId = cat.id;
       document.title = cat.name + ' — Top 10 Singapore Food';
-      document.getElementById('page-title').innerHTML =
-        `Top 10 <em>${cat.name}</em>`;
+      document.getElementById('page-title').innerHTML = `Top 10 <em>${cat.name}</em>`;
       document.getElementById('page-sub').textContent =
         cat.description ? cat.description + ' · voted by the community' : 'Voted by the community';
 
-      // load restaurants
       await loadRestaurants();
     } catch (e) {
       document.getElementById('page-title').textContent = 'Could not load';
@@ -498,16 +429,13 @@
   }
 
   function renderTable() {
-    const pending = getPending();
-    const submitted = getSubmitted();
+    const votes = getVotes();
     const remaining = votesRemaining();
     const used = votesUsed();
 
     document.getElementById('votes-left').textContent = remaining;
     renderPips(used);
-
-    document.getElementById('submit-bar').classList.toggle('visible', pendingTotal() > 0);
-    document.getElementById('all-voted-note').classList.toggle('visible', remaining === 0 && pendingTotal() === 0);
+    document.getElementById('all-voted-note').classList.toggle('visible', remaining === 0);
 
     const tbody = document.getElementById('table-body');
 
@@ -524,12 +452,10 @@
       return;
     }
 
-    tbody.innerHTML = restaurants.map((r, i) => {
-      const myPending = pending[r.id] || 0;
-      const mySubmitted = submitted[r.id] || 0;
-      const myTotal = myPending + mySubmitted;
-      const isVoted = myTotal > 0;
-      const minusDisabled = myPending <= 0;
+    tbody.innerHTML = restaurants.map((r) => {
+      const myVotes = votes[r.id] || 0;
+      const isVoted = myVotes > 0;
+      const minusDisabled = myVotes <= 0;
       const plusDisabled = remaining <= 0;
 
       return `<tr class="${isVoted ? 'voted-row' : ''}" id="row-${r.id}">
@@ -541,7 +467,7 @@
         <td class="vote-cell">
           <div class="vctrl">
             <button class="vbtn" onclick="changeVote(${r.id}, -1)" ${minusDisabled ? 'disabled' : ''}>−</button>
-            <span class="vnum ${myPending > 0 ? 'active' : ''}" id="vnum-${r.id}">${myTotal}</span>
+            <span class="vnum ${myVotes > 0 ? 'active' : ''}" id="vnum-${r.id}">${myVotes}</span>
             <button class="vbtn" onclick="changeVote(${r.id}, 1)" ${plusDisabled ? 'disabled' : ''}>+</button>
           </div>
         </td>
@@ -559,68 +485,36 @@
     ).join('');
   }
 
-  function changeVote(restId, delta) {
-    const pending = getPending();
-    const submitted = getSubmitted();
-    const current = pending[restId] || 0;
+  async function changeVote(restId, delta) {
+    const votes = getVotes();
+    const current = votes[restId] || 0;
 
     if (delta < 0 && current <= 0) return;
     if (delta > 0 && votesRemaining() <= 0) return;
 
     const newVal = current + delta;
-    if (newVal <= 0) delete pending[restId];
-    else pending[restId] = newVal;
+    if (newVal <= 0) delete votes[restId];
+    else votes[restId] = newVal;
 
-    savePending(pending);
-    renderTable();
-  }
+    saveVotes(votes);
 
-  async function submitVotes() {
-    const btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Saving…';
-
-    const pending = getPending();
-    const submitted = getSubmitted();
-    const browserId = getBrowserId();
-
-    try {
-      const inserts = Object.entries(pending).map(([id, votes]) => ({
-        browser_id: browserId,
-        target_type: 'restaurant',
-        target_id: parseInt(id),
-        votes_given: votes
-      }));
-
-      await api('votes', {
-        method: 'POST',
-        body: JSON.stringify(inserts),
-        prefer: 'return=minimal'
-      });
-
-      // update total_votes on each restaurant
-      for (const [id, votes] of Object.entries(pending)) {
-        const rest = restaurants.find(r => r.id === parseInt(id));
-        if (rest) {
-          await api(`restaurants?id=eq.${id}`, {
-            method: 'PATCH',
-            body: JSON.stringify({ total_votes: (rest.total_votes || 0) + votes }),
-            prefer: 'return=minimal'
-          });
-          rest.total_votes = (rest.total_votes || 0) + votes;
-          submitted[id] = (submitted[id] || 0) + votes;
-        }
-      }
-
-      saveSubmitted(submitted);
-      savePending({});
+    const rest = restaurants.find(r => r.id === restId);
+    if (rest) {
+      rest.total_votes = (rest.total_votes || 0) + delta;
       restaurants.sort((a, b) => b.total_votes - a.total_votes);
-      renderTable();
-      showToast('Votes saved! Thank you 🙏');
-    } catch (e) {
-      showToast('Error saving votes. Please try again.');
-      btn.disabled = false;
-      btn.textContent = 'Confirm my votes';
+    }
+
+    renderTable();
+
+    if (rest) {
+      try {
+        await api(`restaurants?id=eq.${restId}`, {
+          method: 'PATCH',
+          body: JSON.stringify({ total_votes: rest.total_votes }),
+        });
+      } catch (e) {
+        showToast('Error saving vote. Please try again.');
+      }
     }
   }
 
