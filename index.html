@@ -254,21 +254,12 @@
 
   .vnum.active { color: var(--red); }
 
-  .link-cell {
-    width: 80px;
-    text-align: right;
-  }
-
-  .view-link {
-    font-size: 12px;
-    color: var(--red);
+  .dish-link {
+    color: inherit;
     text-decoration: none;
-    white-space: nowrap;
-    opacity: 0.8;
-    transition: opacity 0.15s;
   }
 
-  .view-link:hover { opacity: 1; }
+  .dish-link:hover .name { color: var(--red); }
 
   .voted-row td { background: #fefaf9; }
   .voted-badge {
@@ -323,13 +314,6 @@
     .vnum { font-size: 13px; min-width: 18px; }
     .vote-cell { width: auto; }
 
-    .link-cell { width: auto; }
-    .view-link {
-      display: block;
-      padding: 8px 6px;
-      font-size: 13px;
-    }
-
     .submit-bar { flex-direction: column; align-items: stretch; }
     .submit-btn { width: 100%; padding: 13px; font-size: 15px; text-align: center; }
   }
@@ -361,11 +345,10 @@
           <th>Dish</th>
           <th class="r count-cell">Votes</th>
           <th class="r">Your vote</th>
-          <th></th>
         </tr>
       </thead>
       <tbody id="table-body">
-        <tr class="loading-row"><td colspan="4">Loading dishes…</td></tr>
+        <tr class="loading-row"><td colspan="3">Loading dishes…</td></tr>
       </tbody>
     </table>
   </div>
@@ -463,7 +446,7 @@ async function api(path, options = {}) {
       renderTable();
     } catch (e) {
       document.getElementById('table-body').innerHTML =
-        '<tr class="loading-row"><td colspan="4">Could not load data. Check your Supabase URL and key.</td></tr>';
+        '<tr class="loading-row"><td colspan="3">Could not load data. Check your Supabase URL and key.</td></tr>';
     }
   }
 
@@ -483,7 +466,7 @@ async function api(path, options = {}) {
 
     const tbody = document.getElementById('table-body');
     if (!categories.length) {
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="4">No dishes found.</td></tr>';
+      tbody.innerHTML = '<tr class="loading-row"><td colspan="3">No dishes found.</td></tr>';
       return;
     }
 
@@ -498,7 +481,9 @@ async function api(path, options = {}) {
 
       return `<tr class="${isVoted ? 'voted-row' : ''}" id="row-${cat.id}">
         <td class="dish-cell">
-          <div class="name">${cat.name}</div>
+          <a class="dish-link" href="category.html?slug=${cat.slug}">
+            <div class="name">${cat.name}</div>
+          </a>
         </td>
         <td class="count-cell">${(cat.total_votes || 0).toLocaleString()}</td>
         <td class="vote-cell">
@@ -508,7 +493,6 @@ async function api(path, options = {}) {
             <button class="vbtn" onclick="changeVote(${cat.id}, 1)" ${plusDisabled ? 'disabled' : ''} title="Add vote">+</button>
           </div>
         </td>
-        <td class="link-cell"><a class="view-link" href="category.html?slug=${cat.slug}">Top 10 →</a></td>
       </tr>`;
     }).join('');
 
