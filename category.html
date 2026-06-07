@@ -352,8 +352,18 @@
   const SUPABASE_KEY = 'sb_publishable_1tTdNWd1N0n9w3ElrCynNw_ia1JWbc6';
 
   const TOTAL_VOTES = 10;
+  const BROWSER_ID_KEY = 'sg_food_browser_id';
 
   function votesKey(slug) { return 'sg_votes_rest_' + slug; }
+
+  function getBrowserId() {
+    let id = localStorage.getItem(BROWSER_ID_KEY);
+    if (!id) {
+      id = 'u_' + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      localStorage.setItem(BROWSER_ID_KEY, id);
+    }
+    return id;
+  }
 
   async function api(path, options = {}) {
     const headers = {
@@ -506,15 +516,32 @@
 
     renderTable();
 
-    if (rest) {
-      try {
+    const browserId = getBrowserId();
+    try {
+      if (rest) {
         await api(`restaurants?id=eq.${restId}`, {
           method: 'PATCH',
           body: JSON.stringify({ total_votes: rest.total_votes }),
         });
-      } catch (e) {
-        showToast('Error saving vote. Please try again.');
       }
+      if (newVal <= 0) {
+        await api(`votes?browser_id=eq.${browserId}&target_type=eq.restaurant&target_id=eq.${restId}`, {
+          method: 'DELETE',
+        });
+      } else {
+        await api('votes', {
+          method: 'POST',
+          prefer: 'resolution=merge-duplicates',
+          body: JSON.stringify({
+            browser_id: browserId,
+            target_type: 'restaurant',
+            target_id: restId,
+            votes_given: newVal,
+          }),
+        });
+      }
+    } catch (e) {
+      showToast('Error saving vote. Please try again.');
     }
   }
 
