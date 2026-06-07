@@ -456,7 +456,7 @@
         });
       }
       if (newVal <= 0) {
-        await api(`votes?browser_id=eq.${browserId}&target_type=eq.category&target_id=eq.${catId}`, {
+        await api(`votes?browser_id=eq.${browserId}&target_type=eq.dish&target_id=eq.${catId}`, {
           method: 'DELETE',
         });
       } else {
@@ -465,7 +465,7 @@
           prefer: 'resolution=merge-duplicates',
           body: JSON.stringify({
             browser_id: browserId,
-            target_type: 'category',
+            target_type: 'dish',
             target_id: catId,
             votes_given: newVal,
           }),
