@@ -368,7 +368,7 @@
 
   async function loadCategories() {
     try {
-      categories = await api('categories?select=*&order=total_votes.desc', {
+      categories = await api('dishes?select=*&order=total_votes.desc', {
         headers: { 'Prefer': 'return=representation' }
       });
       renderTable();
@@ -450,7 +450,7 @@
     const browserId = getBrowserId();
     try {
       if (cat) {
-        await api(`categories?id=eq.${catId}`, {
+        await api(`dishes?id=eq.${catId}`, {
           method: 'PATCH',
           body: JSON.stringify({ total_votes: cat.total_votes }),
         });

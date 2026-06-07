@@ -411,7 +411,7 @@
     }
 
     try {
-      const cats = await api(`categories?slug=eq.${slug}&select=*`);
+      const cats = await api(`dishes?slug=eq.${slug}&select=*`);
       if (!cats || cats.length === 0) {
         document.getElementById('page-title').textContent = 'Dish not found';
         return;
