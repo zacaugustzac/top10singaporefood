@@ -414,6 +414,7 @@
   // ── auth ──
   sb.auth.onAuthStateChange(async (event, session) => {
     currentUser = session?.user || null;
+    if (window.location.hash) history.replaceState(null, '', window.location.pathname + window.location.search);
     renderAuthBar();
     myVotes = currentUser ? await fetchMyVotes() : {};
     if (restaurants.length) renderTable();
@@ -432,7 +433,7 @@
   async function signIn() {
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.href, scopes: 'email' }
+      options: { redirectTo: window.location.origin + window.location.pathname, scopes: 'email' }
     });
     if (error) showToast('Sign in failed: ' + error.message);
   }
