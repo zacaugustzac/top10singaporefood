@@ -72,7 +72,7 @@
     transform: translateX(-50%);
     background: var(--info);
     color: white;
-    padding: 10px 20px;
+    padding: 10px 10px 10px 20px;
     border-radius: 99px;
     font-size: 14px;
     font-weight: 500;
@@ -99,9 +99,86 @@
 
   .pip.used { background: white; }
 
+  .submit-btn {
+    background: white;
+    color: var(--info);
+    border: none;
+    padding: 6px 16px;
+    border-radius: 99px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    touch-action: manipulation;
+  }
+
+  .submit-btn:hover:not(:disabled) { background: #e8f0fe; }
+  .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .signin-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+  }
+
+  .signin-overlay.hidden { display: none; }
+
+  .signin-modal {
+    background: white;
+    border-radius: 16px;
+    padding: 32px 28px;
+    max-width: 360px;
+    width: 100%;
+    text-align: center;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+  }
+
+  .signin-modal h3 {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--text);
+  }
+
+  .signin-modal p {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  .signin-modal .google-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 20px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    margin-bottom: 12px;
+  }
+
+  .cancel-link {
+    background: none;
+    border: none;
+    color: var(--hint);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    padding: 4px;
+  }
+
+  .cancel-link:hover { color: var(--muted); }
+
   @media (max-width: 600px) {
-    .votes-bubble { font-size: 13px; padding: 9px 16px; bottom: 16px; }
+    .votes-bubble { font-size: 13px; padding: 8px 8px 8px 16px; bottom: 16px; }
     .votes-bubble .pips { display: none; }
+    .submit-btn { padding: 6px 14px; font-size: 12px; }
   }
 
   .table-wrap {
@@ -385,6 +462,19 @@
 <div class="votes-bubble" id="votes-bubble">
   <span>You have <strong id="votes-left">10</strong> votes left</span>
   <div class="pips" id="pips-container"></div>
+  <button class="submit-btn" id="submit-btn" onclick="submitVotes()" disabled>Submit</button>
+</div>
+
+<div class="signin-overlay hidden" id="signin-overlay">
+  <div class="signin-modal">
+    <h3>Sign in to submit</h3>
+    <p>Sign in with Google to save your votes.</p>
+    <button class="google-btn" onclick="signInAndSubmit()">
+      <svg width="16" height="16" viewBox="0 0 24 24" style="flex-shrink:0"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Sign in with Google
+    </button><br>
+    <button class="cancel-link" onclick="document.getElementById('signin-overlay').classList.add('hidden')">Cancel</button>
+  </div>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -398,14 +488,32 @@
 
   let currentUser = null;
   let categories = [];
-  let myVotes = {};
+  let myVotes = {};      // pending (unsaved) votes
+  let savedVotes = {};   // last known DB state
 
   // ── auth ──
   sb.auth.onAuthStateChange(async (event, session) => {
     currentUser = session?.user || null;
     if (window.location.hash) history.replaceState(null, '', window.location.pathname);
     renderAuthBar();
-    myVotes = currentUser ? await fetchMyVotes() : {};
+
+    if (currentUser) {
+      const pending = sessionStorage.getItem('pendingVotes');
+      if (pending) {
+        // user just signed in to submit — restore pending votes and submit
+        sessionStorage.removeItem('pendingVotes');
+        myVotes = JSON.parse(pending);
+        savedVotes = await fetchSavedVotes();
+        document.getElementById('signin-overlay').classList.add('hidden');
+        await commitVotes();
+      } else {
+        savedVotes = await fetchSavedVotes();
+        myVotes = { ...savedVotes };
+      }
+    } else {
+      savedVotes = {};
+      myVotes = {};
+    }
     if (categories.length) renderTable();
   });
 
@@ -427,11 +535,19 @@
     if (error) showToast('Sign in failed: ' + error.message);
   }
 
-  async function signOut() {
-    await sb.auth.signOut();
+  async function signInAndSubmit() {
+    sessionStorage.setItem('pendingVotes', JSON.stringify(myVotes));
+    await signIn();
   }
 
-  async function fetchMyVotes() {
+  async function signOut() {
+    myVotes = {};
+    savedVotes = {};
+    await sb.auth.signOut();
+    renderTable();
+  }
+
+  async function fetchSavedVotes() {
     const { data } = await sb.from('votes').select('target_id,votes_given').eq('browser_id', currentUser.id).eq('target_type', 'dish');
     const map = {};
     (data || []).forEach(r => { map[r.target_id] = r.votes_given; });
@@ -457,6 +573,9 @@
     const used = votesUsed();
     document.getElementById('votes-left').textContent = remaining;
     renderPips(used);
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = used === 0;
+    btn.textContent = used > 0 ? `Submit (${used})` : 'Submit';
 
     const tbody = document.getElementById('table-body');
     if (!categories.length) {
@@ -467,8 +586,8 @@
     tbody.innerHTML = categories.map((cat) => {
       const myV = myVotes[cat.id] || 0;
       const isVoted = myV > 0;
-      const minusDisabled = !currentUser || myV <= 0;
-      const plusDisabled = !currentUser || remaining <= 0;
+      const minusDisabled = myV <= 0;
+      const plusDisabled = remaining <= 0;
 
       return `<tr class="${isVoted ? 'voted-row' : ''}" id="row-${cat.id}">
         <td class="dish-cell">
@@ -497,36 +616,54 @@
     ).join('');
   }
 
-  async function changeVote(catId, delta) {
-    if (!currentUser) { showToast('Please sign in to vote'); return; }
-
+  function changeVote(catId, delta) {
     const current = myVotes[catId] || 0;
     if (delta < 0 && current <= 0) return;
     if (delta > 0 && votesRemaining() <= 0) return;
-
     const newVal = current + delta;
     if (newVal <= 0) delete myVotes[catId];
     else myVotes[catId] = newVal;
+    renderTable();
+  }
 
-    const cat = categories.find(c => c.id === catId);
-    if (cat) {
-      cat.total_votes = (cat.total_votes || 0) + delta;
+  async function submitVotes() {
+    if (!currentUser) {
+      document.getElementById('signin-overlay').classList.remove('hidden');
+      return;
+    }
+    await commitVotes();
+  }
+
+  async function commitVotes() {
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    try {
+      const allIds = new Set([...Object.keys(myVotes), ...Object.keys(savedVotes)].map(Number));
+      for (const catId of allIds) {
+        const newVal = myVotes[catId] || 0;
+        const oldVal = savedVotes[catId] || 0;
+        const delta = newVal - oldVal;
+        if (delta === 0) continue;
+
+        const cat = categories.find(c => c.id === catId);
+        if (cat) {
+          cat.total_votes = (cat.total_votes || 0) + delta;
+          await sb.from('dishes').update({ total_votes: cat.total_votes }).eq('id', catId);
+        }
+        if (newVal <= 0) {
+          await sb.from('votes').delete().eq('browser_id', currentUser.id).eq('target_type', 'dish').eq('target_id', catId);
+        } else {
+          await sb.from('votes').upsert({ browser_id: currentUser.id, target_type: 'dish', target_id: catId, votes_given: newVal }, { onConflict: 'browser_id,target_type,target_id' });
+        }
+      }
+      savedVotes = { ...myVotes };
       categories.sort((a, b) => b.total_votes - a.total_votes);
+      showToast('Votes saved!');
+    } catch (e) {
+      showToast('Error saving votes. Please try again.');
     }
     renderTable();
-
-    try {
-      if (cat) {
-        await sb.from('dishes').update({ total_votes: cat.total_votes }).eq('id', catId);
-      }
-      if (newVal <= 0) {
-        await sb.from('votes').delete().eq('browser_id', currentUser.id).eq('target_type', 'dish').eq('target_id', catId);
-      } else {
-        await sb.from('votes').upsert({ browser_id: currentUser.id, target_type: 'dish', target_id: catId, votes_given: newVal }, { onConflict: 'browser_id,target_type,target_id' });
-      }
-    } catch (e) {
-      showToast('Error saving vote. Please try again.');
-    }
   }
 
   function showToast(msg) {
