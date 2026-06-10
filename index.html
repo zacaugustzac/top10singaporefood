@@ -553,9 +553,9 @@
   }
 
   async function fetchSavedVotes() {
-    const { data } = await sb.from('votes').select('target_id,votes_given').eq('browser_id', currentUser.id).eq('target_type', 'dish');
+    const { data } = await sb.from('votes').select('target_id,votes_given').eq('browser_id', currentUser.id).eq('target_type', 'dish').order('id', { ascending: false });
     const map = {};
-    (data || []).forEach(r => { map[r.target_id] = r.votes_given; });
+    (data || []).forEach(r => { if (!(r.target_id in map)) map[r.target_id] = r.votes_given; });
     return map;
   }
 
@@ -656,10 +656,10 @@
           cat.total_votes = (cat.total_votes || 0) + delta;
           await sb.from('dishes').update({ total_votes: cat.total_votes }).eq('id', catId);
         }
-        if (newVal <= 0) {
-          await sb.from('votes').delete().eq('browser_id', currentUser.id).eq('target_type', 'dish').eq('target_id', catId);
-        } else {
-          await sb.from('votes').upsert({ browser_id: currentUser.id, target_type: 'dish', target_id: catId, votes_given: newVal }, { onConflict: 'browser_id,target_type,target_id' });
+        // delete existing row then insert fresh (avoids needing a unique constraint)
+        await sb.from('votes').delete().eq('browser_id', currentUser.id).eq('target_type', 'dish').eq('target_id', catId);
+        if (newVal > 0) {
+          await sb.from('votes').insert({ browser_id: currentUser.id, target_type: 'dish', target_id: catId, votes_given: newVal });
         }
       }
       savedVotes = { ...myVotes };
