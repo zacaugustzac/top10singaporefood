@@ -96,42 +96,47 @@
   .container {
     max-width: 860px;
     margin: 0 auto;
-    padding: 20px 16px 60px;
+    padding: 20px 16px 90px;
   }
 
-  .votes-banner {
-    background: var(--info-bg);
-    border: 1px solid #c8ddf5;
-    border-radius: 10px;
-    padding: 12px 16px;
-    margin-bottom: 18px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 8px;
-  }
-
-  .votes-banner .left {
+  .votes-bubble {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--info);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 99px;
     font-size: 14px;
-    color: var(--info);
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 4px 16px rgba(26,79,138,0.35);
+    z-index: 90;
+    white-space: nowrap;
+    transition: opacity 0.3s;
   }
 
-  .votes-banner .left strong { font-weight: 500; }
-
-  .votes-banner .pips {
+  .votes-bubble .pips {
     display: flex;
-    gap: 4px;
+    gap: 3px;
   }
 
   .pip {
-    width: 10px; height: 10px;
+    width: 8px; height: 8px;
     border-radius: 50%;
-    background: #c8ddf5;
+    background: rgba(255,255,255,0.35);
     transition: background 0.2s;
   }
 
-  .pip.used { background: var(--info); }
+  .pip.used { background: white; }
+
+  @media (max-width: 600px) {
+    .votes-bubble { font-size: 13px; padding: 9px 16px; bottom: 16px; }
+    .votes-bubble .pips { display: none; }
+  }
 
   .table-wrap {
     background: var(--surface);
@@ -400,11 +405,6 @@
 
 <div class="container">
 
-  <div class="votes-banner">
-    <div class="left">You have <strong id="votes-left">10</strong> votes left for dish categories</div>
-    <div class="pips" id="pips-container"></div>
-  </div>
-
   <div class="table-wrap">
     <table>
       <thead>
@@ -421,6 +421,11 @@
   </div>
 
   <p class="footer-note" id="footer-note"></p>
+</div>
+
+<div class="votes-bubble" id="votes-bubble">
+  <span>You have <strong id="votes-left">10</strong> votes left</span>
+  <div class="pips" id="pips-container"></div>
 </div>
 
 <div class="toast" id="toast"></div>
