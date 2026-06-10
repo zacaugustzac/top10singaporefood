@@ -457,7 +457,7 @@
   async function signIn() {
     const { error } = await sb.auth.signInWithOAuth({
       provider: 'google',
-      options: { redirectTo: window.location.href }
+      options: { redirectTo: window.location.href, scopes: 'email' }
     });
     if (error) showToast('Sign in failed: ' + error.message);
   }
