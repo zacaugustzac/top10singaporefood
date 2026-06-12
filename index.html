@@ -517,6 +517,9 @@
         // Existing user: show their DB votes, discard any pre-login votes.
         // New user (nothing in DB): restore pre-login votes so they can review and submit.
         myVotes = (pending && !hasSaved) ? JSON.parse(pending) : { ...savedVotes };
+        if (pending && hasSaved) {
+          showToast('Your saved votes have been restored. Pre-login votes discarded — edit and resubmit anytime.', 2000);
+        }
         document.getElementById('signin-overlay').classList.add('hidden');
       }
     } else {
@@ -712,11 +715,11 @@
     renderTable();
   }
 
-  function showToast(msg) {
+  function showToast(msg, duration = 2800) {
     const t = document.getElementById('toast');
     t.textContent = msg;
     t.classList.add('show');
-    setTimeout(() => t.classList.remove('show'), 2800);
+    setTimeout(() => t.classList.remove('show'), duration);
   }
 
   renderAuthBar();
