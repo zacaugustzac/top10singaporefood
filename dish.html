@@ -443,16 +443,42 @@
     if (error) showToast('Sign in failed: ' + error.message);
   }
 
-  async function signOut() {
-    await sb.auth.signOut();
+  function signOut() {
+    myVotes = {};
+    currentUser = null;
+    try { localStorage.removeItem('sb-xlbgijjtxbflhkjftene-auth-token'); } catch {}
+    sb.auth.signOut({ scope: 'local' }).catch(() => {});
+    renderAuthBar();
+    renderTable();
+  }
+
+  function getAuthToken() {
+    try {
+      const stored = localStorage.getItem('sb-xlbgijjtxbflhkjftene-auth-token');
+      return stored ? JSON.parse(stored)?.access_token ?? null : null;
+    } catch { return null; }
+  }
+
+  function authHeaders() {
+    const token = getAuthToken();
+    return token ? { apikey: SUPABASE_KEY, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } : null;
   }
 
   async function fetchMyVotes() {
     if (!categoryId) return {};
-    const { data } = await sb.from('votes').select('target_id,votes_given').eq('user_id', currentUser.id).eq('target_type', 'restaurant');
-    const map = {};
-    (data || []).forEach(r => { map[r.target_id] = r.votes_given; });
-    return map;
+    const headers = authHeaders();
+    if (!headers) return {};
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/votes?select=target_id,votes_given&user_id=eq.${currentUser.id}&target_type=eq.restaurant`,
+        { headers }
+      );
+      if (!res.ok) return {};
+      const data = await res.json();
+      const map = {};
+      data.forEach(r => { map[r.target_id] = r.votes_given; });
+      return map;
+    } catch { return {}; }
   }
 
   function votesUsed() { return Object.values(myVotes).reduce((a, b) => a + b, 0); }
@@ -473,8 +499,12 @@
     }
 
     try {
-      const { data: cats } = await sb.from('dishes').select('*').eq('slug', slug);
-      if (!cats || cats.length === 0) {
+      const dishRes = await fetch(
+        `${SUPABASE_URL}/rest/v1/dishes?slug=eq.${encodeURIComponent(slug)}`,
+        { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+      );
+      const cats = dishRes.ok ? await dishRes.json() : [];
+      if (!cats.length) {
         document.getElementById('page-title').textContent = 'Dish not found';
         return;
       }
@@ -492,8 +522,13 @@
   }
 
   async function loadRestaurants() {
-    const { data } = await sb.from('restaurants').select('*').eq('category_id', categoryId).order('total_votes', { ascending: false });
-    restaurants = data || [];
+    try {
+      const res = await fetch(
+        `${SUPABASE_URL}/rest/v1/restaurants_with_votes?category_id=eq.${categoryId}&order=total_votes.desc`,
+        { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
+      );
+      restaurants = res.ok ? await res.json() : [];
+    } catch { restaurants = []; }
     if (currentUser) myVotes = await fetchMyVotes();
     renderTable();
   }
@@ -565,22 +600,26 @@
     if (newVal <= 0) delete myVotes[restId];
     else myVotes[restId] = newVal;
 
-    const rest = restaurants.find(r => r.id === restId);
-    if (rest) {
-      rest.total_votes = (rest.total_votes || 0) + delta;
-      restaurants.sort((a, b) => b.total_votes - a.total_votes);
-    }
     renderTable();
 
     try {
-      if (rest) {
-        await sb.from('restaurants').update({ total_votes: rest.total_votes }).eq('id', restId);
-      }
+      const headers = authHeaders();
+      if (!headers) throw new Error('not authenticated');
       if (newVal <= 0) {
-        await sb.from('votes').delete().eq('user_id', currentUser.id).eq('target_type', 'restaurant').eq('target_id', restId);
+        const del = await fetch(
+          `${SUPABASE_URL}/rest/v1/votes?user_id=eq.${currentUser.id}&target_type=eq.restaurant&target_id=eq.${restId}`,
+          { method: 'DELETE', headers }
+        );
+        if (!del.ok) throw new Error('delete failed');
       } else {
-        await sb.from('votes').upsert({ user_id: currentUser.id, target_type: 'restaurant', target_id: restId, votes_given: newVal }, { onConflict: 'user_id,target_type,target_id' });
+        const ups = await fetch(
+          `${SUPABASE_URL}/rest/v1/votes?on_conflict=user_id,target_type,target_id`,
+          { method: 'POST', headers: { ...headers, Prefer: 'resolution=merge-duplicates,return=minimal' },
+            body: JSON.stringify({ user_id: currentUser.id, target_type: 'restaurant', target_id: restId, votes_given: newVal }) }
+        );
+        if (!ups.ok) throw new Error('upsert failed');
       }
+      await loadRestaurants();
     } catch (e) {
       showToast('Error saving vote. Please try again.');
     }
