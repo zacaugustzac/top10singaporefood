@@ -700,15 +700,14 @@
             { method: 'PATCH', headers: { ...headers, Prefer: 'return=minimal' }, body: JSON.stringify({ total_votes: cat.total_votes }) });
           if (!r.ok) throw new Error('dishes update failed');
         }
-        // delete existing row then insert fresh (avoids needing a unique constraint)
-        const del = await fetch(
-          `${SUPABASE_URL}/rest/v1/votes?user_id=eq.${currentUser.id}&target_type=eq.dish&target_id=eq.${catId}`,
-          { method: 'DELETE', headers });
-        if (!del.ok) throw new Error('votes delete failed');
         if (newVal > 0) {
-          const ins = await fetch(`${SUPABASE_URL}/rest/v1/votes`,
-            { method: 'POST', headers: { ...headers, Prefer: 'return=minimal' }, body: JSON.stringify({ user_id: currentUser.id, target_type: 'dish', target_id: catId, votes_given: newVal }) });
-          if (!ins.ok) throw new Error('votes insert failed');
+          const ups = await fetch(`${SUPABASE_URL}/rest/v1/votes?on_conflict=user_id,target_type,target_id`,
+            { method: 'POST', headers: { ...headers, Prefer: 'resolution=merge-duplicates,return=minimal' }, body: JSON.stringify({ user_id: currentUser.id, target_type: 'dish', target_id: catId, votes_given: newVal }) });
+          if (!ups.ok) throw new Error('votes upsert failed');
+        } else {
+          const del = await fetch(`${SUPABASE_URL}/rest/v1/votes?user_id=eq.${currentUser.id}&target_type=eq.dish&target_id=eq.${catId}`,
+            { method: 'DELETE', headers });
+          if (!del.ok) throw new Error('votes delete failed');
         }
       }
       savedVotes = { ...myVotes };
