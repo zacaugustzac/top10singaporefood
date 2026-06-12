@@ -581,7 +581,7 @@
     if (!headers) return {};
     try {
       const res = await fetch(
-        `${SUPABASE_URL}/rest/v1/votes?select=target_id,votes_given&browser_id=eq.${currentUser.id}&target_type=eq.dish&order=id.desc`,
+        `${SUPABASE_URL}/rest/v1/votes?select=target_id,votes_given&user_id=eq.${currentUser.id}&target_type=eq.dish&order=id.desc`,
         { headers }
       );
       if (!res.ok) return {};
@@ -702,12 +702,12 @@
         }
         // delete existing row then insert fresh (avoids needing a unique constraint)
         const del = await fetch(
-          `${SUPABASE_URL}/rest/v1/votes?browser_id=eq.${currentUser.id}&target_type=eq.dish&target_id=eq.${catId}`,
+          `${SUPABASE_URL}/rest/v1/votes?user_id=eq.${currentUser.id}&target_type=eq.dish&target_id=eq.${catId}`,
           { method: 'DELETE', headers });
         if (!del.ok) throw new Error('votes delete failed');
         if (newVal > 0) {
           const ins = await fetch(`${SUPABASE_URL}/rest/v1/votes`,
-            { method: 'POST', headers: { ...headers, Prefer: 'return=minimal' }, body: JSON.stringify({ browser_id: currentUser.id, target_type: 'dish', target_id: catId, votes_given: newVal }) });
+            { method: 'POST', headers: { ...headers, Prefer: 'return=minimal' }, body: JSON.stringify({ user_id: currentUser.id, target_type: 'dish', target_id: catId, votes_given: newVal }) });
           if (!ins.ok) throw new Error('votes insert failed');
         }
       }

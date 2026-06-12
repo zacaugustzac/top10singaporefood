@@ -449,7 +449,7 @@
 
   async function fetchMyVotes() {
     if (!categoryId) return {};
-    const { data } = await sb.from('votes').select('target_id,votes_given').eq('browser_id', currentUser.id).eq('target_type', 'restaurant');
+    const { data } = await sb.from('votes').select('target_id,votes_given').eq('user_id', currentUser.id).eq('target_type', 'restaurant');
     const map = {};
     (data || []).forEach(r => { map[r.target_id] = r.votes_given; });
     return map;
@@ -577,9 +577,9 @@
         await sb.from('restaurants').update({ total_votes: rest.total_votes }).eq('id', restId);
       }
       if (newVal <= 0) {
-        await sb.from('votes').delete().eq('browser_id', currentUser.id).eq('target_type', 'restaurant').eq('target_id', restId);
+        await sb.from('votes').delete().eq('user_id', currentUser.id).eq('target_type', 'restaurant').eq('target_id', restId);
       } else {
-        await sb.from('votes').upsert({ browser_id: currentUser.id, target_type: 'restaurant', target_id: restId, votes_given: newVal }, { onConflict: 'browser_id,target_type,target_id' });
+        await sb.from('votes').upsert({ user_id: currentUser.id, target_type: 'restaurant', target_id: restId, votes_given: newVal }, { onConflict: 'user_id,target_type,target_id' });
       }
     } catch (e) {
       showToast('Error saving vote. Please try again.');
