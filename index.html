@@ -504,21 +504,20 @@
     renderAuthBar();
 
     if (currentUser) {
+      // Claim the slot synchronously before first await so a concurrent second
+      // auth event (Supabase fires both INITIAL_SESSION and SIGNED_IN) cannot
+      // race in and overwrite myVotes with a mid-commit DB snapshot.
       const pending = sessionStorage.getItem('pendingVotes');
-      if (pending) {
-        // Claim the slot synchronously before first await so a concurrent second
-        // auth event (Supabase fires both INITIAL_SESSION and SIGNED_IN) cannot
-        // race in and overwrite myVotes with a mid-commit DB snapshot.
+      if (pending) sessionStorage.removeItem('pendingVotes');
+
+      if (!authInitialized) {
         authInitialized = true;
-        sessionStorage.removeItem('pendingVotes');
-        myVotes = JSON.parse(pending);
         savedVotes = await fetchSavedVotes();
+        const hasSaved = Object.keys(savedVotes).length > 0;
+        // Existing user: show their DB votes, discard any pre-login votes.
+        // New user (nothing in DB): restore pre-login votes so they can review and submit.
+        myVotes = (pending && !hasSaved) ? JSON.parse(pending) : { ...savedVotes };
         document.getElementById('signin-overlay').classList.add('hidden');
-        await commitVotes();
-      } else if (!authInitialized) {
-        authInitialized = true;
-        savedVotes = await fetchSavedVotes();
-        myVotes = { ...savedVotes };
       }
     } else {
       authInitialized = false;
