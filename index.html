@@ -489,7 +489,12 @@
   const SUPABASE_KEY = 'sb_publishable_1tTdNWd1N0n9w3ElrCynNw_ia1JWbc6';
   const TOTAL_VOTES = 10;
 
+  // Auth client — holds the user session; may block queries while refreshing JWT
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  // Anonymous client — no session, no token refresh, used for public read queries
+  const sbAnon = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY, {
+    auth: { persistSession: false, autoRefreshToken: false }
+  });
 
   let currentUser = null;
   let categories = [];
@@ -554,7 +559,9 @@
   async function signOut() {
     myVotes = {};
     savedVotes = {};
-    await sb.auth.signOut();
+    // scope:'local' clears session immediately without a network round-trip,
+    // avoiding a hang when the auth server is slow or the JWT needs refreshing.
+    await sb.auth.signOut({ scope: 'local' });
     renderTable();
   }
 
@@ -570,7 +577,7 @@
 
   // ── data ──
   async function loadCategories() {
-    const { data, error } = await sb.from('dishes').select('*').order('total_votes', { ascending: false });
+    const { data, error } = await sbAnon.from('dishes').select('*').order('total_votes', { ascending: false });
     if (error) {
       document.getElementById('table-body').innerHTML = '<tr class="loading-row"><td colspan="3">Could not load data.</td></tr>';
       return;
