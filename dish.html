@@ -281,6 +281,40 @@
 
   .empty-state p { font-size: 13px; line-height: 1.6; }
 
+  .search-wrap {
+    margin-bottom: 12px;
+    position: relative;
+  }
+
+  .search-wrap svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--hint);
+    pointer-events: none;
+  }
+
+  .search-input {
+    width: 100%;
+    padding: 9px 12px 9px 36px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: var(--surface);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .search-input::placeholder { color: var(--hint); }
+
+  .search-input:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+  }
+
   .footer-note {
     text-align: center;
     font-size: 12px;
@@ -390,6 +424,11 @@
 
 <div class="container">
 
+  <div class="search-wrap">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input class="search-input" id="search-input" type="search" placeholder="Search restaurants…" oninput="onSearch(this.value)">
+  </div>
+
   <div class="table-wrap">
     <table>
       <thead>
@@ -429,6 +468,7 @@
   let restaurants = [];
   let myVotes = {};
   let savedVotes = {};
+  let searchQuery = '';
 
   // ── auth ──
   sb.auth.onAuthStateChange(async (event, session) => {
@@ -555,6 +595,11 @@
     renderTable();
   }
 
+  function onSearch(val) {
+    searchQuery = val.trim().toLowerCase();
+    renderTable();
+  }
+
   function hasChanges() {
     const allIds = new Set([...Object.keys(myVotes), ...Object.keys(savedVotes)].map(Number));
     for (const id of allIds) {
@@ -590,7 +635,17 @@
       return;
     }
 
-    tbody.innerHTML = restaurants.map((r) => {
+    const filtered = searchQuery
+      ? restaurants.filter(r => r.name.toLowerCase().includes(searchQuery) || (r.address || '').toLowerCase().includes(searchQuery))
+      : restaurants;
+
+    if (!filtered.length) {
+      tbody.innerHTML = `<tr class="loading-row"><td colspan="3">No restaurants match "${document.getElementById('search-input').value}".</td></tr>`;
+      document.getElementById('footer-note').textContent = '';
+      return;
+    }
+
+    tbody.innerHTML = filtered.map((r) => {
       const myV = myVotes[r.id] || 0;
       const isVoted = myV > 0;
       const minusDisabled = !currentUser || myV <= 0;
@@ -612,8 +667,10 @@
       </tr>`;
     }).join('');
 
-    document.getElementById('footer-note').textContent =
-      `${restaurants.length} restaurant${restaurants.length !== 1 ? 's' : ''} · sorted by community votes`;
+    const note = searchQuery
+      ? `${filtered.length} of ${restaurants.length} restaurants`
+      : `${restaurants.length} restaurant${restaurants.length !== 1 ? 's' : ''} · sorted by community votes`;
+    document.getElementById('footer-note').textContent = note;
   }
 
   function renderPips(used) {
