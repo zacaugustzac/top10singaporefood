@@ -4,6 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Top 10 Singapore Food — Voted by Community</title>
+<meta name="description" content="Community-ranked top 10 Singapore hawker dishes. Vote for your favourites and see real-time results from fellow food lovers.">
+<link rel="canonical" href="https://top10singaporefood.vercel.app/">
+<meta property="og:title" content="Top 10 Singapore Food Voted by Community">
+<meta property="og:description" content="Community-ranked top 10 Singapore hawker dishes. Vote for your favourites and see real-time results.">
+<meta property="og:url" content="https://top10singaporefood.vercel.app/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Top 10 Singapore Food">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Top 10 Singapore Food Voted by Community">
+<meta name="twitter:description" content="Community-ranked top 10 Singapore hawker dishes. Vote for your favourites and see real-time results.">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Top 10 Singapore Food",
+  "url": "https://top10singaporefood.vercel.app/",
+  "description": "Community voting platform for the best Singapore hawker food and dishes"
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <script src="/supabase.min.js"></script>
@@ -653,7 +672,30 @@
       document.getElementById('table-body').innerHTML = '<tr class="loading-row"><td colspan="3">Could not load data.</td></tr>';
       return;
     }
+    injectIndexSchema(categories);
     renderTable();
+  }
+
+  function injectIndexSchema(cats) {
+    const el = document.getElementById('ld-json-items');
+    if (el) el.remove();
+    const s = document.createElement('script');
+    s.type = 'application/ld+json';
+    s.id = 'ld-json-items';
+    s.textContent = JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      'name': 'Top 10 Singapore Hawker Dishes',
+      'description': 'Community-voted ranking of the most popular Singapore hawker dishes',
+      'url': 'https://top10singaporefood.vercel.app/',
+      'itemListElement': cats.map((cat, i) => ({
+        '@type': 'ListItem',
+        'position': i + 1,
+        'name': cat.name,
+        'url': `https://top10singaporefood.vercel.app/dish.html?slug=${cat.slug}`
+      }))
+    });
+    document.head.appendChild(s);
   }
 
   function onSearch(val) {
