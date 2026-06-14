@@ -38,7 +38,148 @@
   "name": "Top 10 Ice Kacang Restaurants in Singapore",
   "description": "Community-voted top 10 Ice Kacang restaurants in Singapore. Real-time rankings updated by food lovers.",
   "url": "https://top10singaporefood.vercel.app/dishes/ice-kacang",
-  "itemListElement": []
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "item": {
+        "@type": "Restaurant",
+        "name": "Lim's Ice Kacang",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "166 Jalan Besar, Singapore 208878",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "item": {
+        "@type": "Restaurant",
+        "name": "Kim's Famous Ice Kacang",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "79 Bedok North Street 4, #01-32, Bedok North Food Centre, Singapore 460079",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 3,
+      "item": {
+        "@type": "Restaurant",
+        "name": "Ice Kacang Penang",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "51 Old Airport Road, #01-09, Old Airport Road Food Centre, Singapore 390051",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "item": {
+        "@type": "Restaurant",
+        "name": "ABC Brickworks Ice Kacang",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "6 Jalan Bukit Merah, #01-118, ABC Brickworks Market & Food Centre, Singapore 150006",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 5,
+      "item": {
+        "@type": "Restaurant",
+        "name": "Ghim Moh Ice Kacang",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "20 Ghim Moh Road, #01-14, Ghim Moh Market & Food Centre, Singapore 270020",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 6,
+      "item": {
+        "@type": "Restaurant",
+        "name": "Ah Balling Peanut Soup",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "01 Zion Road, #01-34, Zion Riverside Food Centre, Singapore 247730",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 7,
+      "item": {
+        "@type": "Restaurant",
+        "name": "Chendol & Ice Kacang Stall",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "531A Upper Cross Street, #02-49, Hong Lim Food Centre, Singapore 051531",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 8,
+      "item": {
+        "@type": "Restaurant",
+        "name": "Golden Mile Food Centre Stall",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "505 Beach Road, #B1-25, Golden Mile Food Centre, Singapore 199583",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 9,
+      "item": {
+        "@type": "Restaurant",
+        "name": "No. 1 Balestier Dessert",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "357 Balestier Road, Singapore 329776",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 10,
+      "item": {
+        "@type": "Restaurant",
+        "name": "Selera Rasa Nasi Lemak",
+        "servesCuisine": "Ice Kacang",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "259B Toa Payoh Lorong 8, Toa Payoh Food Centre, Singapore 310259",
+          "addressCountry": "SG"
+        }
+      }
+    }
+  ]
 }]
 </script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -103,6 +244,9 @@
   .empty-state { text-align: center; padding: 48px 24px; color: var(--hint); }
   .empty-state h3 { font-size: 20px; font-weight: 400; margin-bottom: 8px; color: var(--muted); }
   .footer-note { text-align: center; font-size: 12px; color: var(--hint); margin-top: 20px; }
+  .dish-description { margin-top: 32px; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+  .dish-description h2 { font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 10px; }
+  .dish-description p { font-size: 14px; line-height: 1.7; color: var(--muted); }
   .loading-row td { text-align: center; padding: 40px; color: var(--hint); font-size: 14px; }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 99px; font-size: 14px; transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
@@ -157,12 +301,156 @@
         </tr>
       </thead>
       <tbody id="table-body">
-        <tr><td colspan="3"><div class="empty-state"><h3>No restaurants yet</h3></div></td></tr>
+        <tr id="row-244">
+          <td class="rest-cell">
+            <div class="name">Lim's Ice Kacang</div>
+            <div class="addr">166 Jalan Besar, Singapore 208878</div>
+          </td>
+          <td class="count-cell" id="count-244">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(244,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-244">0</span>
+              <button class="vbtn" onclick="changeVote(244,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-247">
+          <td class="rest-cell">
+            <div class="name">Kim's Famous Ice Kacang</div>
+            <div class="addr">79 Bedok North Street 4, #01-32, Bedok North Food Centre, Singapore 460079</div>
+          </td>
+          <td class="count-cell" id="count-247">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(247,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-247">0</span>
+              <button class="vbtn" onclick="changeVote(247,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-241">
+          <td class="rest-cell">
+            <div class="name">Ice Kacang Penang</div>
+            <div class="addr">51 Old Airport Road, #01-09, Old Airport Road Food Centre, Singapore 390051</div>
+          </td>
+          <td class="count-cell" id="count-241">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(241,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-241">0</span>
+              <button class="vbtn" onclick="changeVote(241,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-250">
+          <td class="rest-cell">
+            <div class="name">ABC Brickworks Ice Kacang</div>
+            <div class="addr">6 Jalan Bukit Merah, #01-118, ABC Brickworks Market &amp; Food Centre, Singapore 150006</div>
+          </td>
+          <td class="count-cell" id="count-250">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(250,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-250">0</span>
+              <button class="vbtn" onclick="changeVote(250,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-249">
+          <td class="rest-cell">
+            <div class="name">Ghim Moh Ice Kacang</div>
+            <div class="addr">20 Ghim Moh Road, #01-14, Ghim Moh Market &amp; Food Centre, Singapore 270020</div>
+          </td>
+          <td class="count-cell" id="count-249">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(249,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-249">0</span>
+              <button class="vbtn" onclick="changeVote(249,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-246">
+          <td class="rest-cell">
+            <div class="name">Ah Balling Peanut Soup</div>
+            <div class="addr">01 Zion Road, #01-34, Zion Riverside Food Centre, Singapore 247730</div>
+          </td>
+          <td class="count-cell" id="count-246">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(246,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-246">0</span>
+              <button class="vbtn" onclick="changeVote(246,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-245">
+          <td class="rest-cell">
+            <div class="name">Chendol &amp; Ice Kacang Stall</div>
+            <div class="addr">531A Upper Cross Street, #02-49, Hong Lim Food Centre, Singapore 051531</div>
+          </td>
+          <td class="count-cell" id="count-245">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(245,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-245">0</span>
+              <button class="vbtn" onclick="changeVote(245,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-248">
+          <td class="rest-cell">
+            <div class="name">Golden Mile Food Centre Stall</div>
+            <div class="addr">505 Beach Road, #B1-25, Golden Mile Food Centre, Singapore 199583</div>
+          </td>
+          <td class="count-cell" id="count-248">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(248,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-248">0</span>
+              <button class="vbtn" onclick="changeVote(248,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-243">
+          <td class="rest-cell">
+            <div class="name">No. 1 Balestier Dessert</div>
+            <div class="addr">357 Balestier Road, Singapore 329776</div>
+          </td>
+          <td class="count-cell" id="count-243">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(243,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-243">0</span>
+              <button class="vbtn" onclick="changeVote(243,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-242">
+          <td class="rest-cell">
+            <div class="name">Selera Rasa Nasi Lemak</div>
+            <div class="addr">259B Toa Payoh Lorong 8, Toa Payoh Food Centre, Singapore 310259</div>
+          </td>
+          <td class="count-cell" id="count-242">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(242,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-242">0</span>
+              <button class="vbtn" onclick="changeVote(242,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
       </tbody>
     </table>
   </div>
 
-  <p class="footer-note" id="footer-note">0 restaurants · sorted by community votes</p>
+  <p class="footer-note" id="footer-note">10 restaurants · sorted by community votes</p>
+
+  <section class="dish-description">
+    <h2>What is Ice Kacang?</h2>
+    <p>Ice kacang is Singapore's iconic shaved ice dessert, featuring a mound of finely shaved ice drenched in brightly coloured syrups — typically rose (pink), pandan (green), and sarsi (brown) — over a base of sweet toppings including red azuki beans, attap seeds (palm fruit), grass jelly, cubed agar jelly, sweetcorn, and condensed milk. A scoop of vanilla ice cream or a drizzle of coconut milk is often added for extra richness. The name "kacang" means "bean" in Malay, referencing the red beans that are a traditional core ingredient. Originally a simple, affordable treat sold by street hawkers to beat Singapore's year-round tropical heat, ice kacang has evolved into a beloved dessert at hawker centres and dessert shops across the island, offering endless customisation and a refreshing contrast of textures and flavours.</p>
+  </section>
 </div>
 
 <div class="votes-bubble">
@@ -180,7 +468,7 @@
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const INIT       = {"id": 22, "name": "Ice Kacang", "slug": "ice-kacang", "restaurants": []};
+  const INIT       = {"id": 22, "name": "Ice Kacang", "slug": "ice-kacang", "restaurants": [{"id": 244, "category_id": 22, "name": "Lim's Ice Kacang", "address": "166 Jalan Besar, Singapore 208878", "total_votes": 0}, {"id": 247, "category_id": 22, "name": "Kim's Famous Ice Kacang", "address": "79 Bedok North Street 4, #01-32, Bedok North Food Centre, Singapore 460079", "total_votes": 0}, {"id": 241, "category_id": 22, "name": "Ice Kacang Penang", "address": "51 Old Airport Road, #01-09, Old Airport Road Food Centre, Singapore 390051", "total_votes": 0}, {"id": 250, "category_id": 22, "name": "ABC Brickworks Ice Kacang", "address": "6 Jalan Bukit Merah, #01-118, ABC Brickworks Market & Food Centre, Singapore 150006", "total_votes": 0}, {"id": 249, "category_id": 22, "name": "Ghim Moh Ice Kacang", "address": "20 Ghim Moh Road, #01-14, Ghim Moh Market & Food Centre, Singapore 270020", "total_votes": 0}, {"id": 246, "category_id": 22, "name": "Ah Balling Peanut Soup", "address": "01 Zion Road, #01-34, Zion Riverside Food Centre, Singapore 247730", "total_votes": 0}, {"id": 245, "category_id": 22, "name": "Chendol & Ice Kacang Stall", "address": "531A Upper Cross Street, #02-49, Hong Lim Food Centre, Singapore 051531", "total_votes": 0}, {"id": 248, "category_id": 22, "name": "Golden Mile Food Centre Stall", "address": "505 Beach Road, #B1-25, Golden Mile Food Centre, Singapore 199583", "total_votes": 0}, {"id": 243, "category_id": 22, "name": "No. 1 Balestier Dessert", "address": "357 Balestier Road, Singapore 329776", "total_votes": 0}, {"id": 242, "category_id": 22, "name": "Selera Rasa Nasi Lemak", "address": "259B Toa Payoh Lorong 8, Toa Payoh Food Centre, Singapore 310259", "total_votes": 0}]};
   let categoryId   = INIT.id;
   let categoryName = INIT.name;
   let slug         = INIT.slug;
