@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Generates one static HTML file per dish into dishes/. Run: python scripts/generate-static.py"""
 
-import json, os, urllib.request, urllib.error
+import json, os, urllib.request, urllib.error, datetime
 
 SUPABASE_URL = 'https://xlbgijjtxbflhkjftene.supabase.co'
 SUPABASE_KEY = 'sb_publishable_1tTdNWd1N0n9w3ElrCynNw_ia1JWbc6'
@@ -192,6 +192,7 @@ def build_page(dish, rests):
   .dish-description {{ margin-top: 32px; padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }}
   .dish-description h2 {{ font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 10px; }}
   .dish-description p {{ font-size: 14px; line-height: 1.7; color: var(--muted); }}
+  .noscript-note {{ display: none; background: var(--info-bg); color: var(--info); padding: 10px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }}
   .loading-row td {{ text-align: center; padding: 40px; color: var(--hint); font-size: 14px; }}
   .toast {{ position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 99px; font-size: 14px; transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }}
   .toast.show {{ transform: translateX(-50%) translateY(0); }}
@@ -214,6 +215,10 @@ def build_page(dish, rests):
     .vote-cell {{ width: auto; }}
   }}
 </style>
+<noscript><style>
+  .vote-cell, thead th:last-child, .votes-bubble, .auth-bar {{ display: none !important; }}
+  .noscript-note {{ display: block !important; }}
+</style></noscript>
 </head>
 <body>
 
@@ -230,6 +235,8 @@ def build_page(dish, rests):
 </header>
 
 <div class="container">
+
+  <div class="noscript-note">Voting requires JavaScript. The restaurant rankings below reflect the latest community votes.</div>
 
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -492,13 +499,14 @@ def main():
         print(f' {len(rests)} restaurants OK')
 
     # Regenerate sitemap
+    today = datetime.date.today().isoformat()
     lines = [
         '<?xml version="1.0" encoding="UTF-8"?>',
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-        f'  <url><loc>{BASE_URL}/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>',
+        f'  <url><loc>{BASE_URL}/</loc><lastmod>{today}</lastmod><changefreq>daily</changefreq><priority>1.0</priority></url>',
     ]
     for s in slugs:
-        lines.append(f'  <url><loc>{BASE_URL}/dishes/{s}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>')
+        lines.append(f'  <url><loc>{BASE_URL}/dishes/{s}</loc><lastmod>{today}</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>')
     lines.append('</urlset>')
     sitemap_path = os.path.join(os.path.dirname(__file__), '..', 'sitemap.xml')
     with open(sitemap_path, 'w', encoding='utf-8') as f:
