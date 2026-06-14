@@ -692,7 +692,7 @@
         '@type': 'ListItem',
         'position': i + 1,
         'name': cat.name,
-        'url': `https://top10singaporefood.vercel.app/dish.html?slug=${cat.slug}`
+        'url': `https://top10singaporefood.vercel.app/dishes/${cat.slug}`
       }))
     });
     document.head.appendChild(s);
@@ -736,7 +736,7 @@
 
       return `<tr class="${isVoted ? 'voted-row' : ''}" id="row-${cat.id}">
         <td class="dish-cell">
-          <a class="dish-link" href="dish.html?slug=${cat.slug}">
+          <a class="dish-link" href="/dishes/${cat.slug}">
             <div class="name">${cat.name}</div>
           </a>
         </td>
