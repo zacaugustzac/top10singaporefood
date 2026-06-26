@@ -356,6 +356,7 @@
     border: 1px solid #f0c8c4;
   }
 
+  .site-intro { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 14px; }
   .search-wrap {
     margin-bottom: 12px;
     position: relative;
@@ -499,6 +500,8 @@
 
 <div class="container">
 
+  <p class="site-intro">A community voting platform for Singapore hawker food. Sign in with Google to cast your 10 votes across your favourite dishes — see real-time rankings updated by fellow food lovers.</p>
+
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
     <input class="search-input" id="search-input" type="search" placeholder="Search dishes…" oninput="onSearch(this.value)">
@@ -523,7 +526,7 @@
 </div>
 
 <div class="votes-bubble" id="votes-bubble">
-  <span>You have <strong id="votes-left">10</strong> votes left</span>
+  <span>Vote for your favourite dish! You have <strong id="votes-left">10</strong> votes left</span>
   <div class="pips" id="pips-container"></div>
   <button class="submit-btn" id="submit-btn" onclick="submitVotes()" disabled>Submit</button>
 </div>
