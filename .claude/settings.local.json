@@ -9,7 +9,17 @@
       "Bash(git config *)",
       "Bash(git branch *)",
       "Bash(git merge *)",
-      "Bash(git push *)"
+      "Bash(git push *)",
+      "Bash(curl -L \"https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js\" -o \"c:/Users/zdrag/Desktop/Everything/VSCode Projects/top10singaporefood/supabase.min.js\")",
+      "Bash(ls \"C:\\\\Users\\\\zdrag\\\\.claude\\\\commands\" 2>/dev/null || echo \"not found\")",
+      "Read(//c/Users/zdrag/.claude/**)",
+      "Bash(mkdir -p \"c:\\\\Users\\\\zdrag\\\\Desktop\\\\Everything\\\\VSCode Projects\\\\top10singaporefood\\\\.claude\\\\commands\")",
+      "Bash(mkdir -p \"c:\\\\Users\\\\zdrag\\\\Desktop\\\\Everything\\\\VSCode Projects\\\\top10singaporefood\\\\scripts\")",
+      "Bash(node scripts/generate-static.js)"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\zdrag\\Desktop\\Everything\\VSCode Projects\\top10singaporefood\\.claude",
+      "c:\\Users\\zdrag\\Desktop\\Everything\\VSCode Projects\\top10singaporefood"
     ]
   }
 }

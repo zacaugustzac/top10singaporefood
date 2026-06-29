@@ -5,7 +5,7 @@ import json, os, urllib.request, urllib.error, datetime
 
 SUPABASE_URL = 'https://xlbgijjtxbflhkjftene.supabase.co'
 SUPABASE_KEY = 'sb_publishable_1tTdNWd1N0n9w3ElrCynNw_ia1JWbc6'
-BASE_URL     = 'https://top10singaporefood.vercel.app'
+BASE_URL     = 'https://top10singaporefood.com'
 HEADERS      = {'apikey': SUPABASE_KEY, 'Authorization': f'Bearer {SUPABASE_KEY}'}
 
 

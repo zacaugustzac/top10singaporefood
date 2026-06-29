@@ -7,7 +7,7 @@ const path = require('path');
 
 const SUPABASE_URL = 'https://xlbgijjtxbflhkjftene.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_1tTdNWd1N0n9w3ElrCynNw_ia1JWbc6';
-const BASE_URL     = 'https://top10singaporefood.vercel.app';
+const BASE_URL     = 'https://top10singaporefood.com';
 const ANON_HEADERS = { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` };
 
 async function api(endpoint) {

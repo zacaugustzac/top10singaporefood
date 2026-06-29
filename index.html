@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Top 10 Singapore Food — Voted by Community</title>
 <meta name="description" content="Community-ranked top 10 Singapore hawker dishes. Vote for your favourites and see real-time results from fellow food lovers.">
-<link rel="canonical" href="https://top10singaporefood.vercel.app/">
+<link rel="canonical" href="https://top10singaporefood.com/">
 <meta property="og:title" content="Top 10 Singapore Food Voted by Community">
 <meta property="og:description" content="Community-ranked top 10 Singapore hawker dishes. Vote for your favourites and see real-time results.">
-<meta property="og:url" content="https://top10singaporefood.vercel.app/">
+<meta property="og:url" content="https://top10singaporefood.com/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Top 10 Singapore Food">
 <meta name="twitter:card" content="summary">
@@ -19,7 +19,7 @@
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Top 10 Singapore Food",
-  "url": "https://top10singaporefood.vercel.app/",
+  "url": "https://top10singaporefood.com/",
   "description": "Community voting platform for the best Singapore hawker food and dishes"
 }
 </script>
@@ -690,12 +690,12 @@
       '@type': 'ItemList',
       'name': 'Top 10 Singapore Hawker Dishes',
       'description': 'Community-voted ranking of the most popular Singapore hawker dishes',
-      'url': 'https://top10singaporefood.vercel.app/',
+      'url': 'https://top10singaporefood.com/',
       'itemListElement': cats.map((cat, i) => ({
         '@type': 'ListItem',
         'position': i + 1,
         'name': cat.name,
-        'url': `https://top10singaporefood.vercel.app/dishes/${cat.slug}`
+        'url': `https://top10singaporefood.com/dishes/${cat.slug}`
       }))
     });
     document.head.appendChild(s);

@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Top 10 Singapore Food — Voted by Community</title>
 <meta name="description" content="Community-voted top 10 Singapore hawker restaurants. See real-time rankings and cast your vote.">
-<link rel="canonical" id="meta-canonical" href="https://top10singaporefood.vercel.app/dish.html">
+<link rel="canonical" id="meta-canonical" href="https://top10singaporefood.com/dish.html">
 <meta property="og:title" id="meta-og-title" content="Top 10 Singapore Food Voted by Community">
 <meta property="og:description" id="meta-og-desc" content="Community-voted top 10 Singapore hawker restaurants. See real-time rankings and cast your vote.">
-<meta property="og:url" id="meta-og-url" content="https://top10singaporefood.vercel.app/dish.html">
+<meta property="og:url" id="meta-og-url" content="https://top10singaporefood.com/dish.html">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Top 10 Singapore Food">
 <meta name="twitter:card" content="summary">
@@ -742,7 +742,7 @@
 
   function updateMeta(catName, catSlug) {
     const desc = `Community-voted top 10 ${catName} restaurants in Singapore. See real-time rankings and cast your vote.`;
-    const url = `https://top10singaporefood.vercel.app/dish.html?slug=${catSlug}`;
+    const url = `https://top10singaporefood.com/dish.html?slug=${catSlug}`;
     const title = `Top 10 ${catName} in Singapore — Voted by Community`;
     document.querySelector('meta[name="description"]').setAttribute('content', desc);
     document.getElementById('meta-canonical').setAttribute('href', url);
@@ -764,8 +764,8 @@
         '@context': 'https://schema.org',
         '@type': 'BreadcrumbList',
         'itemListElement': [
-          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://top10singaporefood.vercel.app/' },
-          { '@type': 'ListItem', 'position': 2, 'name': `Top 10 ${catName}`, 'item': `https://top10singaporefood.vercel.app/dish.html?slug=${catSlug}` }
+          { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://top10singaporefood.com/' },
+          { '@type': 'ListItem', 'position': 2, 'name': `Top 10 ${catName}`, 'item': `https://top10singaporefood.com/dish.html?slug=${catSlug}` }
         ]
       },
       {
@@ -773,7 +773,7 @@
         '@type': 'ItemList',
         'name': `Top 10 ${catName} Restaurants in Singapore`,
         'description': `Community-voted ranking of the best ${catName} restaurants in Singapore`,
-        'url': `https://top10singaporefood.vercel.app/dish.html?slug=${catSlug}`,
+        'url': `https://top10singaporefood.com/dish.html?slug=${catSlug}`,
         'itemListElement': rests.map((r, i) => ({
           '@type': 'ListItem',
           'position': i + 1,
