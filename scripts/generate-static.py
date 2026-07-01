@@ -193,6 +193,10 @@ def build_page(dish, rests):
   .dish-description h2 {{ font-size: 16px; font-weight: 500; color: var(--text); margin-bottom: 10px; }}
   .dish-description p {{ font-size: 14px; line-height: 1.7; color: var(--muted); }}
   .noscript-note {{ display: none; background: var(--info-bg); color: var(--info); padding: 10px 16px; border-radius: 8px; font-size: 13px; margin-bottom: 12px; }}
+  .how-to {{ margin-bottom: 14px; }}
+  .how-to p {{ font-size: 13px; color: var(--muted); line-height: 1.8; }}
+  .how-to a {{ color: var(--red); text-decoration: none; font-weight: 500; }}
+  .how-to a:hover {{ text-decoration: underline; }}
   .loading-row td {{ text-align: center; padding: 40px; color: var(--hint); font-size: 14px; }}
   .toast {{ position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 99px; font-size: 14px; transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }}
   .toast.show {{ transform: translateX(-50%) translateY(0); }}
@@ -237,6 +241,12 @@ def build_page(dish, rests):
 <div class="container">
 
   <div class="noscript-note">Voting requires JavaScript. The restaurant rankings below reflect the latest community votes.</div>
+
+  <div class="how-to">
+    <p>1) Vote for your favourite <a href="https://www.top10singaporefood.com/">dishes</a> (10 votes)</p>
+    <p>2) Vote for your favourite restaurants for each dish (10 votes each dish)</p>
+    <p>Contact <strong>Top10SingaporeFood</strong> on Instagram for any missing dish/restaurant or feedback</p>
+  </div>
 
   <div class="search-wrap">
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
