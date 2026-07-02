@@ -305,14 +305,7 @@ def build_page(dish, rests):
     currentUser = session?.user || null;
     if (window.location.hash) history.replaceState(null, '', window.location.pathname);
     renderAuthBar();
-    if (currentUser) {{
-      savedVotes = await fetchMyVotes();
-      myVotes = {{ ...savedVotes }};
-    }} else {{
-      savedVotes = {{}};
-      myVotes = {{}};
-    }}
-    renderTable();
+    await loadRestaurants();
   }});
 
   function renderAuthBar() {{
