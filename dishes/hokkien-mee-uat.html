@@ -763,9 +763,9 @@
   .rank-badge.silver { background: #F0F0F0; color: #5A5A5A; border: 1.5px solid #B8B8B8; }
   .rank-badge.bronze { background: #FDEBD0; color: #7D4A1E; border: 1.5px solid #D4813A; }
   .rank-badge.plain  { font-size: 11px; font-weight: 500; color: var(--hint); width: auto; height: auto; border-radius: 0; background: none; border: none; }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.15s; background-image: linear-gradient(to right, var(--bar-color, transparent) var(--bar-pct, 0%), transparent var(--bar-pct, 0%)); }
+  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
   tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { --bar-color: rgba(192,57,43,0.13); }
+  tbody tr:hover { background: #faf9f7; }
   td { padding: 12px 14px; vertical-align: middle; }
   .rest-cell { overflow: hidden; }
   .rest-cell .name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -778,7 +778,13 @@
   .vbtn:disabled { opacity: 0.35; cursor: not-allowed; }
   .vnum { font-size: 12px; font-weight: 500; min-width: 16px; text-align: center; color: var(--text); }
   .vnum.active { color: var(--red); }
-  .voted-row td { background: rgba(254,250,249,0.7); }
+  .voted-row td { background: #fefaf9; }
+  .rank-row-gold   td { background: #FFFBEB; }
+  .rank-row-silver td { background: #F8F8F8; }
+  .rank-row-bronze td { background: #FFF8F2; }
+  .rank-row-gold:hover   td { background: #FFF4CC; }
+  .rank-row-silver:hover td { background: #F0F0F0; }
+  .rank-row-bronze:hover td { background: #FCEEE0; }
   .empty-state { text-align: center; padding: 48px 24px; color: var(--hint); }
   .empty-state h3 { font-size: 20px; font-weight: 400; margin-bottom: 8px; color: var(--muted); }
   .footer-note { text-align: center; font-size: 12px; color: var(--hint); margin-top: 20px; }
@@ -1683,7 +1689,6 @@
     }
 
     const rankOf = searchQuery ? {} : Object.fromEntries(restaurants.map((r, i) => [r.id, i + 1]));
-    const maxVotes = Math.max(1, ...restaurants.map(r => r.total_votes || 0));
     tbody.innerHTML = filtered.map(r => {
       const myV = myVotes[r.id] || 0;
       const rank = rankOf[r.id];
@@ -1692,9 +1697,8 @@
       const rankCell = rank
         ? '<td class="rank-cell"><span class="rank-badge ' + medalClass + '">' + medalLabel + '</span></td>'
         : '<td class="rank-cell"></td>';
-      const barPct = ((r.total_votes || 0) / maxVotes * 100).toFixed(1);
-      const barStyle = barPct > 0 ? ' style="--bar-pct:' + barPct + '%;--bar-color:rgba(192,57,43,0.09);"' : '';
-      return '<tr class="' + (myV > 0 ? 'voted-row' : '') + '" id="row-' + r.id + '"' + barStyle + '>' +
+      const rowClass = [myV > 0 ? 'voted-row' : '', rank === 1 ? 'rank-row-gold' : rank === 2 ? 'rank-row-silver' : rank === 3 ? 'rank-row-bronze' : ''].filter(Boolean).join(' ');
+      return '<tr class="' + rowClass + '" id="row-' + r.id + '">' +
         rankCell +
         '<td class="rest-cell"><div class="name">' + r.name + '</div>' +
         (r.address ? '<div class="addr">' + r.address + '</div>' : '') + '</td>' +
