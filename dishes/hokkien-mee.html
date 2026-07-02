@@ -72,6 +72,20 @@
       "position": 3,
       "item": {
         "@type": "Restaurant",
+        "name": "Shiok Hokkien Mee Sengkang",
+        "servesCuisine": "Hokkien Mee",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "279 Sengkang E Ave, Singapore 540279",
+          "addressCountry": "SG"
+        }
+      }
+    },
+    {
+      "@type": "ListItem",
+      "position": 4,
+      "item": {
+        "@type": "Restaurant",
         "name": "Hokkien Man Hokkien Mee",
         "servesCuisine": "Hokkien Mee",
         "address": {
@@ -83,7 +97,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 4,
+      "position": 5,
       "item": {
         "@type": "Restaurant",
         "name": "Outram Park Fried Hokkien Mee",
@@ -97,7 +111,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 5,
+      "position": 6,
       "item": {
         "@type": "Restaurant",
         "name": "Heng Heng Fried Hokkien Mee",
@@ -111,7 +125,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 6,
+      "position": 7,
       "item": {
         "@type": "Restaurant",
         "name": "Ah Hock Fried Hokkien Mee",
@@ -125,7 +139,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 7,
+      "position": 8,
       "item": {
         "@type": "Restaurant",
         "name": "No. 18 Zion Road Fried Hokkien Mee",
@@ -139,7 +153,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 8,
+      "position": 9,
       "item": {
         "@type": "Restaurant",
         "name": "Shiok Hokkien Mee Bedok",
@@ -153,7 +167,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 9,
+      "position": 10,
       "item": {
         "@type": "Restaurant",
         "name": "Kim Keat Hokkien Mee",
@@ -167,7 +181,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 10,
+      "position": 11,
       "item": {
         "@type": "Restaurant",
         "name": "Original Serangoon Hokkien Mee",
@@ -181,7 +195,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 11,
+      "position": 12,
       "item": {
         "@type": "Restaurant",
         "name": "Xia Mee The Hokkien Club Prawn Noodle",
@@ -195,7 +209,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 12,
+      "position": 13,
       "item": {
         "@type": "Restaurant",
         "name": "Teck Kee Fried Hokkien Mee",
@@ -209,7 +223,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 13,
+      "position": 14,
       "item": {
         "@type": "Restaurant",
         "name": "Singapore Fried Hokkien Mee",
@@ -223,7 +237,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 14,
+      "position": 15,
       "item": {
         "@type": "Restaurant",
         "name": "Nam Sing Hokkien Mee",
@@ -237,7 +251,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 15,
+      "position": 16,
       "item": {
         "@type": "Restaurant",
         "name": "Geylang Lor 29 Hokkien Mee",
@@ -251,7 +265,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 16,
+      "position": 17,
       "item": {
         "@type": "Restaurant",
         "name": "Come Daily Fried Hokkien Prawn Mee",
@@ -265,7 +279,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 17,
+      "position": 18,
       "item": {
         "@type": "Restaurant",
         "name": "Shiok Hokkien Mee Beauty World",
@@ -279,7 +293,7 @@
     },
     {
       "@type": "ListItem",
-      "position": 18,
+      "position": 19,
       "item": {
         "@type": "Restaurant",
         "name": "Swee Guan Hokkien Mee",
@@ -455,6 +469,20 @@
               <button class="vbtn" onclick="changeVote(283,-1)" disabled>−</button>
               <span class="vnum" id="vnum-283">0</span>
               <button class="vbtn" onclick="changeVote(283,1)" disabled>+</button>
+            </div>
+          </td>
+        </tr>
+        <tr id="row-287">
+          <td class="rest-cell">
+            <div class="name">Shiok Hokkien Mee Sengkang</div>
+            <div class="addr">279 Sengkang E Ave, Singapore 540279</div>
+          </td>
+          <td class="count-cell" id="count-287">0</td>
+          <td class="vote-cell">
+            <div class="vctrl">
+              <button class="vbtn" onclick="changeVote(287,-1)" disabled>−</button>
+              <span class="vnum" id="vnum-287">0</span>
+              <button class="vbtn" onclick="changeVote(287,1)" disabled>+</button>
             </div>
           </td>
         </tr>
@@ -686,7 +714,7 @@
     </table>
   </div>
 
-  <p class="footer-note" id="footer-note">18 restaurants · sorted by community votes</p>
+  <p class="footer-note" id="footer-note">19 restaurants · sorted by community votes</p>
 
   <section class="dish-description">
     <h2>What is Hokkien Mee?</h2>
@@ -709,7 +737,7 @@
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const INIT       = {"id": 8, "name": "Hokkien Mee", "slug": "hokkien-mee", "restaurants": [{"id": 280, "category_id": 8, "name": "Ah Yu Fried Prawn Noodle Hokkien Mee", "address": "1220 ECP, #01-36, stall 36, Singapore 468960", "total_votes": 0}, {"id": 283, "category_id": 8, "name": "Shiok Hokkien Mee Golden Mile", "address": "505 Beach Rd, #01-57, Singapore 199583", "total_votes": 0}, {"id": 285, "category_id": 8, "name": "Hokkien Man Hokkien Mee", "address": "19 Lor 7 Toa Payoh, Singapore 310019", "total_votes": 0}, {"id": 51, "category_id": 8, "name": "Outram Park Fried Hokkien Mee", "address": "Blk 531A Upper Cross Street, #02-17, Hong Lim Market & Food Centre, Singapore 051531", "total_votes": 0}, {"id": 50, "category_id": 8, "name": "Heng Heng Fried Hokkien Mee", "address": "Blk 127 Toa Payoh Lor 1, #02-24, Toa Payoh Vista Market, Singapore 310127", "total_votes": 0}, {"id": 49, "category_id": 8, "name": "Ah Hock Fried Hokkien Mee", "address": "Blk 726 Clementi West Street 2, #01-258, Clementi 726 Market & Food Centre, Singapore 120726", "total_votes": 0}, {"id": 46, "category_id": 8, "name": "No. 18 Zion Road Fried Hokkien Mee", "address": "70 Zion Road, #01-17, Zion Riverside Food Centre, Singapore 247792", "total_votes": 0}, {"id": 286, "category_id": 8, "name": "Shiok Hokkien Mee Bedok", "address": "412 Bedok North Ave 2, #01-114, Singapore 460412", "total_votes": 0}, {"id": 47, "category_id": 8, "name": "Kim Keat Hokkien Mee", "address": "Blk 92 Toa Payoh Lor 4, #01-264, Kim Keat Palm Market & Food Centre, Singapore 310092", "total_votes": 0}, {"id": 52, "category_id": 8, "name": "Original Serangoon Hokkien Mee", "address": "124 Serangoon North Ave 1, #01-10, Serangoon Garden Market, Singapore 550124", "total_votes": 0}, {"id": 279, "category_id": 8, "name": "Xia Mee The Hokkien Club Prawn Noodle", "address": "1 HarbourFront Walk, #B2-40, Singapore 098585", "total_votes": 0}, {"id": 53, "category_id": 8, "name": "Teck Kee Fried Hokkien Mee", "address": "Blk 79 Circuit Road, #01-601, Circuit Road Hawker Centre, Singapore 370079", "total_votes": 0}, {"id": 284, "category_id": 8, "name": "Singapore Fried Hokkien Mee", "address": "90 Whampoa Dr, #01-32, Singapore 320090", "total_votes": 0}, {"id": 45, "category_id": 8, "name": "Nam Sing Hokkien Mee", "address": "Blk 51 Old Airport Road, #01-32, Old Airport Road Food Centre, Singapore 390051", "total_votes": 0}, {"id": 48, "category_id": 8, "name": "Geylang Lor 29 Hokkien Mee", "address": "396 East Coast Road, Lor 29 Geylang, Singapore 428994", "total_votes": 0}, {"id": 282, "category_id": 8, "name": "Come Daily Fried Hokkien Prawn Mee", "address": "127 Lor 1 Toa Payoh, #02-27 West Market & Food Centre, Singapore 310127", "total_votes": 0}, {"id": 281, "category_id": 8, "name": "Shiok Hokkien Mee Beauty World", "address": "144 Upper Bukit Timah Rd, #04-52, Singapore 588177", "total_votes": 0}, {"id": 44, "category_id": 8, "name": "Swee Guan Hokkien Mee", "address": "396 East Coast Road, Singapore 428994", "total_votes": 0}]};
+  const INIT       = {"id": 8, "name": "Hokkien Mee", "slug": "hokkien-mee", "restaurants": [{"id": 280, "category_id": 8, "name": "Ah Yu Fried Prawn Noodle Hokkien Mee", "address": "1220 ECP, #01-36, stall 36, Singapore 468960", "total_votes": 0}, {"id": 283, "category_id": 8, "name": "Shiok Hokkien Mee Golden Mile", "address": "505 Beach Rd, #01-57, Singapore 199583", "total_votes": 0}, {"id": 287, "category_id": 8, "name": "Shiok Hokkien Mee Sengkang", "address": "279 Sengkang E Ave, Singapore 540279", "total_votes": 0}, {"id": 285, "category_id": 8, "name": "Hokkien Man Hokkien Mee", "address": "19 Lor 7 Toa Payoh, Singapore 310019", "total_votes": 0}, {"id": 51, "category_id": 8, "name": "Outram Park Fried Hokkien Mee", "address": "Blk 531A Upper Cross Street, #02-17, Hong Lim Market & Food Centre, Singapore 051531", "total_votes": 0}, {"id": 50, "category_id": 8, "name": "Heng Heng Fried Hokkien Mee", "address": "Blk 127 Toa Payoh Lor 1, #02-24, Toa Payoh Vista Market, Singapore 310127", "total_votes": 0}, {"id": 49, "category_id": 8, "name": "Ah Hock Fried Hokkien Mee", "address": "Blk 726 Clementi West Street 2, #01-258, Clementi 726 Market & Food Centre, Singapore 120726", "total_votes": 0}, {"id": 46, "category_id": 8, "name": "No. 18 Zion Road Fried Hokkien Mee", "address": "70 Zion Road, #01-17, Zion Riverside Food Centre, Singapore 247792", "total_votes": 0}, {"id": 286, "category_id": 8, "name": "Shiok Hokkien Mee Bedok", "address": "412 Bedok North Ave 2, #01-114, Singapore 460412", "total_votes": 0}, {"id": 47, "category_id": 8, "name": "Kim Keat Hokkien Mee", "address": "Blk 92 Toa Payoh Lor 4, #01-264, Kim Keat Palm Market & Food Centre, Singapore 310092", "total_votes": 0}, {"id": 52, "category_id": 8, "name": "Original Serangoon Hokkien Mee", "address": "124 Serangoon North Ave 1, #01-10, Serangoon Garden Market, Singapore 550124", "total_votes": 0}, {"id": 279, "category_id": 8, "name": "Xia Mee The Hokkien Club Prawn Noodle", "address": "1 HarbourFront Walk, #B2-40, Singapore 098585", "total_votes": 0}, {"id": 53, "category_id": 8, "name": "Teck Kee Fried Hokkien Mee", "address": "Blk 79 Circuit Road, #01-601, Circuit Road Hawker Centre, Singapore 370079", "total_votes": 0}, {"id": 284, "category_id": 8, "name": "Singapore Fried Hokkien Mee", "address": "90 Whampoa Dr, #01-32, Singapore 320090", "total_votes": 0}, {"id": 45, "category_id": 8, "name": "Nam Sing Hokkien Mee", "address": "Blk 51 Old Airport Road, #01-32, Old Airport Road Food Centre, Singapore 390051", "total_votes": 0}, {"id": 48, "category_id": 8, "name": "Geylang Lor 29 Hokkien Mee", "address": "396 East Coast Road, Lor 29 Geylang, Singapore 428994", "total_votes": 0}, {"id": 282, "category_id": 8, "name": "Come Daily Fried Hokkien Prawn Mee", "address": "127 Lor 1 Toa Payoh, #02-27 West Market & Food Centre, Singapore 310127", "total_votes": 0}, {"id": 281, "category_id": 8, "name": "Shiok Hokkien Mee Beauty World", "address": "144 Upper Bukit Timah Rd, #04-52, Singapore 588177", "total_votes": 0}, {"id": 44, "category_id": 8, "name": "Swee Guan Hokkien Mee", "address": "396 East Coast Road, Singapore 428994", "total_votes": 0}]};
   let categoryId   = INIT.id;
   let categoryName = INIT.name;
   let slug         = INIT.slug;
