@@ -357,8 +357,10 @@ def build_page(dish, rests):
     const h = authHeaders();
     if (!h) return {{}};
     try {{
+      const ids = restaurants.map(r => r.id).join(',');
+      if (!ids) return {{}};
       const r = await fetch(
-        SUPABASE_URL + '/rest/v1/votes?select=target_id,votes_given&user_id=eq.' + currentUser.id + '&target_type=eq.restaurant',
+        SUPABASE_URL + '/rest/v1/votes?select=target_id,votes_given&user_id=eq.' + currentUser.id + '&target_type=eq.restaurant&target_id=in.(' + ids + ')',
         {{ headers: h }}
       );
       if (!r.ok) return {{}};
