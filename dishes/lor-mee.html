@@ -178,6 +178,20 @@
           "addressCountry": "SG"
         }
       }
+    },
+    {
+      "@type": "ListItem",
+      "position": 11,
+      "item": {
+        "@type": "Restaurant",
+        "name": "\u5364\u9762 Lor Mee 178",
+        "servesCuisine": "Lor Mee",
+        "address": {
+          "@type": "PostalAddress",
+          "streetAddress": "30 Seng Poh Rd, #02-23, Singapore 168898",
+          "addressCountry": "SG"
+        }
+      }
     }
   ]
 }]
@@ -511,9 +525,27 @@
         </div>
       </div>
     </div>
+    <div class="card" id="row-318">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">11</span>
+        <div class="card-info">
+          <div class="name">卤面 Lor Mee 178</div>
+          <div class="addr">30 Seng Poh Rd, #02-23, Singapore 168898</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-318">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(318,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-318">0</span>
+          <button class="vbtn" onclick="changeVote(318,1)">+</button>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <p class="footer-note" id="footer-note">10 restaurants · sorted by community votes</p>
+  <p class="footer-note" id="footer-note">11 restaurants · sorted by community votes</p>
 
   <section class="dish-description">
     <h2>What is Lor Mee?</h2>
@@ -536,7 +568,7 @@
 
   const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  const INIT       = {"id": 15, "name": "Lor Mee", "slug": "lor-mee", "restaurants": [{"id": 35, "category_id": 15, "name": "Guan Kee Lor Mee", "address": "Blk 75 Toa Payoh Lor 5, #01-43, Toa Payoh West Market & Food Court, Singapore 310075", "total_votes": 0}, {"id": 42, "category_id": 15, "name": "Lim Tee Lor Mee", "address": "Blk 51 Old Airport Road, #01-107, Old Airport Road Food Centre, Singapore 390051", "total_votes": 0}, {"id": 36, "category_id": 15, "name": "Huang Ji Lor Mee", "address": "Blk 127 Toa Payoh Lor 1, #02-36, Toa Payoh Vista Market, Singapore 310127", "total_votes": 0}, {"id": 38, "category_id": 15, "name": "Lucky Lor Mee", "address": "Blk 51 Old Airport Road, #01-79, Old Airport Road Food Centre, Singapore 390051", "total_votes": 0}, {"id": 34, "category_id": 15, "name": "178 Lor Mee", "address": "Blk 84 Bedok North Ave 1, #01-74, Bedok North Road Food Centre, Singapore 460084", "total_votes": 0}, {"id": 41, "category_id": 15, "name": "New World Lor Mee", "address": "Blk 505 Beach Road, #B1-48, Golden Mile Food Centre, Singapore 199583", "total_votes": 0}, {"id": 40, "category_id": 15, "name": "Ong Kee Lor Mee", "address": "Blk 4A Woodlands Centre Road, #01-61, Woodlands Civic Centre, Singapore 731004", "total_votes": 0}, {"id": 43, "category_id": 15, "name": "Ayer Rajah Lor Mee", "address": "Blk 503 West Coast Drive, #01-83, Ayer Rajah Food Centre, Singapore 120503", "total_votes": 0}, {"id": 37, "category_id": 15, "name": "36 Lor Mee", "address": "Blk 335 Smith Street, #02-197, Chinatown Complex Food Centre, Singapore 050335", "total_votes": 0}, {"id": 39, "category_id": 15, "name": "Hup Kee Lor Mee", "address": "Blk 22 Toa Payoh Lor 7, #01-08, Toa Payoh Lorong 8 Market & Food Centre, Singapore 310022", "total_votes": 0}]};
+  const INIT       = {"id": 15, "name": "Lor Mee", "slug": "lor-mee", "restaurants": [{"id": 35, "category_id": 15, "name": "Guan Kee Lor Mee", "address": "Blk 75 Toa Payoh Lor 5, #01-43, Toa Payoh West Market & Food Court, Singapore 310075", "total_votes": 0}, {"id": 42, "category_id": 15, "name": "Lim Tee Lor Mee", "address": "Blk 51 Old Airport Road, #01-107, Old Airport Road Food Centre, Singapore 390051", "total_votes": 0}, {"id": 36, "category_id": 15, "name": "Huang Ji Lor Mee", "address": "Blk 127 Toa Payoh Lor 1, #02-36, Toa Payoh Vista Market, Singapore 310127", "total_votes": 0}, {"id": 38, "category_id": 15, "name": "Lucky Lor Mee", "address": "Blk 51 Old Airport Road, #01-79, Old Airport Road Food Centre, Singapore 390051", "total_votes": 0}, {"id": 34, "category_id": 15, "name": "178 Lor Mee", "address": "Blk 84 Bedok North Ave 1, #01-74, Bedok North Road Food Centre, Singapore 460084", "total_votes": 0}, {"id": 41, "category_id": 15, "name": "New World Lor Mee", "address": "Blk 505 Beach Road, #B1-48, Golden Mile Food Centre, Singapore 199583", "total_votes": 0}, {"id": 40, "category_id": 15, "name": "Ong Kee Lor Mee", "address": "Blk 4A Woodlands Centre Road, #01-61, Woodlands Civic Centre, Singapore 731004", "total_votes": 0}, {"id": 43, "category_id": 15, "name": "Ayer Rajah Lor Mee", "address": "Blk 503 West Coast Drive, #01-83, Ayer Rajah Food Centre, Singapore 120503", "total_votes": 0}, {"id": 37, "category_id": 15, "name": "36 Lor Mee", "address": "Blk 335 Smith Street, #02-197, Chinatown Complex Food Centre, Singapore 050335", "total_votes": 0}, {"id": 39, "category_id": 15, "name": "Hup Kee Lor Mee", "address": "Blk 22 Toa Payoh Lor 7, #01-08, Toa Payoh Lorong 8 Market & Food Centre, Singapore 310022", "total_votes": 0}, {"id": 318, "category_id": 15, "name": "\u5364\u9762 Lor Mee 178", "address": "30 Seng Poh Rd, #02-23, Singapore 168898", "total_votes": 0}]};
   let categoryId   = INIT.id;
   let categoryName = INIT.name;
   let slug         = INIT.slug;
