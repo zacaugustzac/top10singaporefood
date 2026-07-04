@@ -1036,9 +1036,9 @@
             (r.address ? '<div class="addr">' + r.address + '</div>' : '') +
           '</div>' +
           '<div class="vctrl">' +
-            '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (!currentUser || myV <= 0 ? ' disabled' : '') + '>−</button>' +
+            '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (myV <= 0 ? ' disabled' : '') + '>−</button>' +
             '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
-            '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (!currentUser || remaining <= 0 ? ' disabled' : '') + '>+</button>' +
+            '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (remaining <= 0 ? ' disabled' : '') + '>+</button>' +
           '</div>' +
         '</div>' +
         '<div class="card-bottom">' +
@@ -1064,7 +1064,6 @@
   }
 
   function changeVote(restId, delta) {
-    if (!currentUser) { showToast('Please sign in to vote'); return; }
     const cur = myVotes[restId] || 0;
     if (delta < 0 && cur <= 0) return;
     if (delta > 0 && votesRemaining() <= 0) return;
