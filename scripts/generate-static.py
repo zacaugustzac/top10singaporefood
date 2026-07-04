@@ -54,7 +54,8 @@ GOOGLE_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" style="flex-shrin
 
 
 DISH_IMAGES = {
-    'hokkien-mee': '/images/hokkien-mee.jpg',
+    'hokkien-mee':   '/images/hokkien-mee.jpg',
+    'char-kway-teow': '/images/char-kway-teow.jpg',
 }
 
 
