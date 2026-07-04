@@ -748,6 +748,8 @@
   .votes-bubble .pips { display: flex; gap: 3px; }
   .pip { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.35); transition: background 0.2s; }
   .pip.used { background: white; }
+  @keyframes pip-pop { 0% { transform: scale(1); } 45% { transform: scale(1.75); } 72% { transform: scale(0.82); } 100% { transform: scale(1); } }
+  .pip.pip-pop { animation: pip-pop 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
   .submit-btn { background: white; color: var(--info); border: none; padding: 6px 16px; border-radius: 99px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s; touch-action: manipulation; }
   .submit-btn:hover:not(:disabled) { background: #e8f0fe; }
   .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
@@ -1728,8 +1730,13 @@
   }
 
   function renderPips(used) {
-    document.getElementById('pips-container').innerHTML =
-      Array.from({ length: TOTAL_VOTES }, (_, i) => '<div class="pip' + (i < used ? ' used' : '') + '"></div>').join('');
+    const container = document.getElementById('pips-container');
+    const prevUsed = container.querySelectorAll('.pip.used').length;
+    container.innerHTML = Array.from({ length: TOTAL_VOTES }, (_, i) => {
+      const isUsed = i < used;
+      const isNew = isUsed && i >= prevUsed;
+      return '<div class="pip' + (isUsed ? ' used' : '') + (isNew ? ' pip-pop' : '') + '"></div>';
+    }).join('');
   }
 
   function changeVote(restId, delta) {
