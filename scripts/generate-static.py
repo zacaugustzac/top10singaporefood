@@ -53,27 +53,52 @@ GOOGLE_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" style="flex-shrin
 GOOGLE_ICON = '<svg width="16" height="16" viewBox="0 0 24 24" style="flex-shrink:0"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>'
 
 
-def render_rows(rests):
+DISH_IMAGES = {
+    'hokkien-mee': '/images/hokkien-mee.jpg',
+}
+
+
+def render_cards(rests):
     if not rests:
-        return '        <tr><td colspan="3"><div class="empty-state"><h3>No restaurants yet</h3></div></td></tr>'
-    rows = []
-    for r in rests:
-        addr = f'<div class="addr">{esc(r["address"])}</div>' if r.get("address") else ''
-        rows.append(f'''        <tr id="row-{r["id"]}">
-          <td class="rest-cell">
-            <div class="name">{esc(r["name"])}</div>
-            {addr}
-          </td>
-          <td class="count-cell" id="count-{r["id"]}">{(r.get("total_votes") or 0):,}</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote({r["id"]},-1)" disabled>−</button>
-              <span class="vnum" id="vnum-{r["id"]}">0</span>
-              <button class="vbtn" onclick="changeVote({r["id"]},1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>''')
-    return '\n'.join(rows)
+        return '    <div class="empty-state"><h3>No restaurants yet</h3></div>'
+    cards = []
+    for i, r in enumerate(rests):
+        rank = i + 1
+        medal       = '🥇' if rank == 1 else '🥈' if rank == 2 else '🥉' if rank == 3 else str(rank)
+        medal_class = 'gold' if rank == 1 else 'silver' if rank == 2 else 'bronze' if rank == 3 else 'plain'
+        card_class  = f'card rank-{medal_class}' if rank <= 3 else 'card'
+        addr        = f'<div class="addr">{esc(r["address"])}</div>' if r.get('address') else ''
+        votes       = r.get('total_votes') or 0
+        vote_label  = f'{votes:,} vote{"s" if votes != 1 else ""}'
+        if rank <= 3:
+            sc = '#D4A800' if rank == 1 else '#999' if rank == 2 else '#C07030'
+            sparkles = (
+                f'<span class="sparkle" style="top:7px;right:55px;color:{sc};animation-duration:2.2s;animation-delay:0s;">✦</span>'
+                f'<span class="sparkle" style="top:18px;right:32px;color:{sc};animation-duration:1.85s;animation-delay:0.75s;">✦</span>'
+                f'<span class="sparkle" style="top:6px;right:18px;color:{sc};animation-duration:2.6s;animation-delay:1.4s;">✦</span>'
+                f'<span class="sparkle" style="top:20px;right:62px;color:{sc};animation-duration:1.6s;animation-delay:0.4s;">✦</span>'
+            )
+        else:
+            sparkles = ''
+        cards.append(f'''    <div class="{card_class}" id="row-{r['id']}">
+      {sparkles}
+      <div class="card-top">
+        <span class="rank-badge {medal_class}">{medal}</span>
+        <div class="card-info">
+          <div class="name">{esc(r['name'])}</div>
+          {addr}
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-{r['id']}">{vote_label}</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote({r['id']},-1)" disabled>−</button>
+          <span class="vnum" id="vnum-{r['id']}">0</span>
+          <button class="vbtn" onclick="changeVote({r['id']},1)">+</button>
+        </div>
+      </div>
+    </div>''')
+    return '\n'.join(cards)
 
 
 def build_page(dish, rests):
@@ -104,9 +129,14 @@ def build_page(dish, rests):
         ]
     }, indent=2)
 
-    schema = f'[{breadcrumb},{item_list}]'
-    rows   = render_rows(rests)
+    schema         = f'[{breadcrumb},{item_list}]'
+    cards          = render_cards(rests)
     google_icon_js = GOOGLE_ICON.replace("'", "\\'")
+    dish_img       = DISH_IMAGES.get(dish['slug'])
+    if dish_img:
+        hero_html = f'<img src="{dish_img}" alt="{esc(dish["name"])}">\n  <div class="hero-overlay"></div>'
+    else:
+        hero_html = '<div class="hero-bg"></div>\n  <div class="hero-overlay"></div>'
 
     return f'''<!DOCTYPE html>
 <html lang="en">
@@ -142,7 +172,7 @@ def build_page(dish, rests):
 
   body {{ font-family: \'DM Sans\', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }}
 
-  header {{ background: var(--red); color: white; padding: 0 24px; }}
+  header {{ background: linear-gradient(135deg, #C0392B 0%, #D45010 60%, #E06820 100%); color: white; padding: 0 24px; }}
   .header-inner {{ max-width: 860px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; }}
   .header-left {{ display: flex; align-items: center; gap: 10px; min-width: 0; }}
   .back-link {{ color: rgba(255,255,255,0.75); text-decoration: none; font-size: 18px; line-height: 1; flex-shrink: 0; transition: color 0.15s; }}
@@ -161,31 +191,44 @@ def build_page(dish, rests):
   .votes-bubble .pips {{ display: flex; gap: 3px; }}
   .pip {{ width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.35); transition: background 0.2s; }}
   .pip.used {{ background: white; }}
+  @keyframes pip-pop {{ 0% {{ transform: scale(1); }} 45% {{ transform: scale(1.75); }} 72% {{ transform: scale(0.82); }} 100% {{ transform: scale(1); }} }}
+  .pip.pip-pop {{ animation: pip-pop 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }}
   .submit-btn {{ background: white; color: var(--info); border: none; padding: 6px 16px; border-radius: 99px; font-family: \'DM Sans\', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s; touch-action: manipulation; }}
   .submit-btn:hover:not(:disabled) {{ background: #e8f0fe; }}
   .submit-btn:disabled {{ opacity: 0.45; cursor: not-allowed; }}
 
-  .table-wrap {{ background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }}
-  table {{ width: 100%; border-collapse: collapse; table-layout: fixed; }}
-  thead th {{ font-size: 10px; font-weight: 500; color: var(--hint); letter-spacing: 0.05em; text-transform: uppercase; padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: left; background: #faf9f7; }}
-  thead th.r {{ text-align: right; }}
-  thead th.count-cell {{ font-size: 10px; color: var(--hint); }}
-  tbody tr {{ border-bottom: 1px solid var(--border); transition: background 0.1s; }}
-  tbody tr:last-child {{ border-bottom: none; }}
-  tbody tr:hover {{ background: #faf9f7; }}
-  td {{ padding: 12px 14px; vertical-align: middle; }}
-  .rest-cell {{ overflow: hidden; }}
-  .rest-cell .name {{ font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-  .rest-cell .addr {{ font-size: 12px; color: var(--hint); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-  .count-cell {{ font-size: 12px; color: var(--muted); text-align: right; white-space: nowrap; width: 70px; }}
-  .vote-cell {{ text-align: right; width: 72px; }}
-  .vctrl {{ display: inline-flex; align-items: center; gap: 4px; }}
-  .vbtn {{ width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s; font-family: \'DM Sans\', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }}
+  .card-list {{ display: flex; flex-direction: column; gap: 8px; }}
+  .card {{ background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; transition: box-shadow 0.15s, border-color 0.15s; position: relative; overflow: hidden; }}
+  .card:hover {{ box-shadow: 0 2px 10px rgba(0,0,0,0.07); border-color: #d0cbc5; }}
+  .card-top {{ display: flex; align-items: center; gap: 12px; }}
+  .rank-badge {{ display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; font-weight: 700; flex-shrink: 0; }}
+  .rank-badge.gold   {{ background: #FFF3CD; color: #92621A; border: 1.5px solid #F0C040; }}
+  .rank-badge.silver {{ background: #F0F0F0; color: #5A5A5A; border: 1.5px solid #B8B8B8; }}
+  .rank-badge.bronze {{ background: #FDEBD0; color: #7D4A1E; border: 1.5px solid #D4813A; }}
+  .rank-badge.plain  {{ font-size: 11px; font-weight: 500; color: var(--hint); background: none; border: none; }}
+  .card-info {{ flex: 1; min-width: 0; }}
+  .card-info .name {{ font-size: 14px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+  .card-info .addr {{ font-size: 12px; color: var(--hint); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
+  .card-bottom {{ margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }}
+  .vote-count {{ font-size: 12px; color: var(--muted); white-space: nowrap; }}
+  .card.voted {{ background: #fefaf9; border-color: #e0bab5; }}
+  .card.rank-gold   {{ background: #FFFBEB; border-color: #F0C040; }}
+  .card.rank-silver {{ background: #F8F8F8; border-color: #C8C8C8; }}
+  .card.rank-bronze {{ background: #FFF8F2; border-color: #D09060; }}
+  .card.rank-gold:hover   {{ box-shadow: 0 2px 12px rgba(240,192,64,0.28); }}
+  .card.rank-silver:hover {{ box-shadow: 0 2px 10px rgba(180,180,180,0.22); }}
+  .card.rank-bronze:hover {{ box-shadow: 0 2px 12px rgba(210,130,70,0.22); }}
+  @keyframes sparkle-twinkle {{ 0%, 100% {{ opacity: 0; transform: scale(0.4) rotate(0deg); }} 50% {{ opacity: 1; transform: scale(1) rotate(20deg); }} }}
+  .sparkle {{ position: absolute; pointer-events: none; font-size: 11px; animation: sparkle-twinkle ease-in-out infinite; }}
+  .vctrl {{ display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }}
+  .vbtn {{ width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s, transform 0.08s; font-family: \'DM Sans\', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }}
   .vbtn:hover:not(:disabled) {{ border-color: var(--red); background: var(--red-light); color: var(--red); }}
   .vbtn:disabled {{ opacity: 0.35; cursor: not-allowed; }}
+  .vbtn:active:not(:disabled) {{ transform: scale(0.78); }}
+  @keyframes vote-burst {{ 0% {{ transform: scale(0.6); opacity: 0.9; }} 60% {{ transform: scale(2.4); opacity: 0.4; }} 100% {{ transform: scale(3); opacity: 0; }} }}
+  .vote-burst {{ position: fixed; pointer-events: none; z-index: 9999; width: 28px; height: 28px; border-radius: 50%; animation: vote-burst 0.32s ease-out forwards; }}
   .vnum {{ font-size: 12px; font-weight: 500; min-width: 16px; text-align: center; color: var(--text); }}
   .vnum.active {{ color: var(--red); }}
-  .voted-row td {{ background: #fefaf9; }}
   .empty-state {{ text-align: center; padding: 48px 24px; color: var(--hint); }}
   .empty-state h3 {{ font-size: 20px; font-weight: 400; margin-bottom: 8px; color: var(--muted); }}
   .footer-note {{ text-align: center; font-size: 12px; color: var(--hint); margin-top: 20px; }}
@@ -197,7 +240,6 @@ def build_page(dish, rests):
   .how-to p {{ font-size: 13px; color: var(--muted); line-height: 1.8; }}
   .how-to a {{ color: var(--red); text-decoration: none; font-weight: 500; }}
   .how-to a:hover {{ text-decoration: underline; }}
-  .loading-row td {{ text-align: center; padding: 40px; color: var(--hint); font-size: 14px; }}
   .toast {{ position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 99px; font-size: 14px; transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }}
   .toast.show {{ transform: translateX(-50%) translateY(0); }}
   .auth-bar {{ display: flex; align-items: center; flex-shrink: 0; }}
@@ -205,6 +247,11 @@ def build_page(dish, rests):
   .google-btn:hover {{ background: #f1f3f4; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }}
   .signout-btn {{ background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 4px 12px; border-radius: 6px; font-family: \'DM Sans\', sans-serif; font-size: 12px; cursor: pointer; transition: background 0.15s; touch-action: manipulation; }}
   .signout-btn:hover {{ background: rgba(255,255,255,0.3); }}
+  .hero-strip {{ position: relative; width: 100%; height: 160px; overflow: hidden; }}
+  .hero-bg {{ position: absolute; inset: 0; background: radial-gradient(ellipse at 25% 70%, rgba(255,180,60,0.55) 0%, transparent 55%), radial-gradient(ellipse at 75% 25%, rgba(180,55,10,0.45) 0%, transparent 50%), linear-gradient(155deg, #5C1E02 0%, #9D3E0F 30%, #C96520 55%, #E8954A 78%, #F5C87A 100%); }}
+  .hero-strip img {{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }}
+  .hero-overlay {{ position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 50%, transparent 100%); }}
+  .hero-label {{ position: absolute; bottom: 14px; left: 20px; color: #fff; font-size: 20px; font-weight: 700; letter-spacing: 0.04em; text-shadow: 0 1px 8px rgba(0,0,0,0.8); pointer-events: none; }}
 
   @media (max-width: 600px) {{
     .votes-bubble {{ font-size: 13px; padding: 8px 8px 8px 16px; bottom: 16px; }}
@@ -212,15 +259,14 @@ def build_page(dish, rests):
     .submit-btn {{ padding: 6px 14px; font-size: 12px; }}
     header {{ padding: 0 16px; }}
     header h1 {{ font-size: clamp(12px,3.5vw,16px); }}
-    td {{ padding: 10px 6px; }}
-    thead th {{ padding: 10px 6px; }}
+    .card {{ padding: 10px 12px; }}
+    .card-info .name {{ font-size: 13px; }}
     .vbtn {{ width: 34px; height: 34px; font-size: 17px; }}
     .vnum {{ font-size: 13px; min-width: 18px; }}
-    .vote-cell {{ width: auto; }}
   }}
 </style>
 <noscript><style>
-  .vote-cell, thead th:last-child, .votes-bubble, .auth-bar {{ display: none !important; }}
+  .vctrl, .votes-bubble, .auth-bar {{ display: none !important; }}
   .noscript-note {{ display: block !important; }}
 </style></noscript>
 </head>
@@ -238,6 +284,11 @@ def build_page(dish, rests):
   </div>
 </header>
 
+<div class="hero-strip">
+  {hero_html}
+  <div class="hero-label">{esc(dish["name"])}</div>
+</div>
+
 <div class="container">
 
   <div class="noscript-note">Voting requires JavaScript. The restaurant rankings below reflect the latest community votes.</div>
@@ -253,19 +304,8 @@ def build_page(dish, rests):
     <input class="search-input" id="search-input" type="search" placeholder="Search restaurants…" oninput="onSearch(this.value)">
   </div>
 
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Restaurant</th>
-          <th class="r count-cell">Total Votes</th>
-          <th class="r">Your vote</th>
-        </tr>
-      </thead>
-      <tbody id="table-body">
-{rows}
-      </tbody>
-    </table>
+  <div id="table-body" class="card-list">
+{cards}
   </div>
 
   <p class="footer-note" id="footer-note">{footer}</p>
@@ -396,9 +436,9 @@ def build_page(dish, rests):
     btn.disabled  = !changed;
     btn.textContent = changed ? 'Save (' + used + ')' : (used > 0 ? 'Saved' : 'Save');
 
-    const tbody = document.getElementById('table-body');
+    const list = document.getElementById('table-body');
     if (!restaurants.length) {{
-      tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state"><h3>No restaurants yet</h3></div></td></tr>';
+      list.innerHTML = '<div class="empty-state"><h3>No restaurants yet</h3></div>';
       document.getElementById('footer-note').textContent = '';
       return;
     }}
@@ -408,22 +448,47 @@ def build_page(dish, rests):
       : restaurants;
 
     if (!filtered.length) {{
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="3">No restaurants match "' + document.getElementById('search-input').value + '".</td></tr>';
+      list.innerHTML = '<div class="empty-state"><h3>No matching restaurants</h3></div>';
       document.getElementById('footer-note').textContent = '';
       return;
     }}
 
-    tbody.innerHTML = filtered.map(r => {{
+    const rankOf = searchQuery ? {{}} : Object.fromEntries(restaurants.map((r, i) => [r.id, i + 1]));
+    list.innerHTML = filtered.map(r => {{
       const myV = myVotes[r.id] || 0;
-      return '<tr class="' + (myV > 0 ? 'voted-row' : '') + '" id="row-' + r.id + '">' +
-        '<td class="rest-cell"><div class="name">' + r.name + '</div>' +
-        (r.address ? '<div class="addr">' + r.address + '</div>' : '') + '</td>' +
-        '<td class="count-cell" id="count-' + r.id + '">' + (r.total_votes || 0).toLocaleString() + '</td>' +
-        '<td class="vote-cell"><div class="vctrl">' +
-          '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (!currentUser || myV <= 0 ? ' disabled' : '') + '>−</button>' +
-          '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
-          '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (!currentUser || remaining <= 0 ? ' disabled' : '') + '>+</button>' +
-        '</div></td></tr>';
+      const rank = rankOf[r.id];
+      const medalClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'plain';
+      const medalLabel = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : (rank || '');
+      const badge = '<span class="rank-badge ' + medalClass + '">' + medalLabel + '</span>';
+      const cardClass = ['card', myV > 0 ? 'voted' : '',
+        rank === 1 ? 'rank-gold' : rank === 2 ? 'rank-silver' : rank === 3 ? 'rank-bronze' : ''
+      ].filter(Boolean).join(' ');
+      const votes = r.total_votes || 0;
+      const sparkleColor = rank === 1 ? '#D4A800' : rank === 2 ? '#999' : '#C07030';
+      const sparkles = rank >= 1 && rank <= 3 ? [
+        {{ t: 7,  r: 55, d: 0,    dur: 2.2  }},
+        {{ t: 18, r: 32, d: 0.75, dur: 1.85 }},
+        {{ t: 6,  r: 18, d: 1.4,  dur: 2.6  }},
+        {{ t: 20, r: 62, d: 0.4,  dur: 1.6  }},
+      ].map(s => '<span class="sparkle" style="top:' + s.t + 'px;right:' + s.r + 'px;color:' + sparkleColor + ';animation-duration:' + s.dur + 's;animation-delay:' + s.d + 's;">✦</span>').join('') : '';
+      return '<div class="' + cardClass + '" id="row-' + r.id + '">' +
+        sparkles +
+        '<div class="card-top">' +
+          badge +
+          '<div class="card-info">' +
+            '<div class="name">' + r.name + '</div>' +
+            (r.address ? '<div class="addr">' + r.address + '</div>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="card-bottom">' +
+          '<span class="vote-count" id="count-' + r.id + '">' + votes.toLocaleString() + ' vote' + (votes !== 1 ? 's' : '') + '</span>' +
+          '<div class="vctrl">' +
+            '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (myV <= 0 ? ' disabled' : '') + '>−</button>' +
+            '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
+            '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (remaining <= 0 ? ' disabled' : '') + '>+</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
     }}).join('');
 
     document.getElementById('footer-note').textContent = searchQuery
@@ -432,12 +497,15 @@ def build_page(dish, rests):
   }}
 
   function renderPips(used) {{
-    document.getElementById('pips-container').innerHTML =
-      Array.from({{ length: TOTAL_VOTES }}, (_, i) => '<div class="pip' + (i < used ? ' used' : '') + '"></div>').join('');
+    const container = document.getElementById('pips-container');
+    const prevUsed = container.querySelectorAll('.pip.used').length;
+    container.innerHTML = Array.from({{ length: TOTAL_VOTES }}, (_, i) => {{
+      const isUsed = i < used, isNew = isUsed && i >= prevUsed;
+      return '<div class="pip' + (isUsed ? ' used' : '') + (isNew ? ' pip-pop' : '') + '"></div>';
+    }}).join('');
   }}
 
   function changeVote(restId, delta) {{
-    if (!currentUser) {{ showToast('Please sign in to vote'); return; }}
     const cur = myVotes[restId] || 0;
     if (delta < 0 && cur <= 0) return;
     if (delta > 0 && votesRemaining() <= 0) return;
@@ -446,7 +514,50 @@ def build_page(dish, rests):
     renderTable();
   }}
 
+  function playVoteSound(delta) {{
+    try {{
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      if (delta > 0) {{
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(480, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(860, ctx.currentTime + 0.07);
+        gain.gain.setValueAtTime(0.16, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.13);
+      }} else {{
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(360, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.07);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
+      }}
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+      osc.onended = () => ctx.close();
+    }} catch(e) {{}}
+  }}
+
+  function spawnBurst(el, delta) {{
+    const r = el.getBoundingClientRect();
+    const dot = document.createElement('div');
+    dot.className = 'vote-burst';
+    dot.style.left = (r.left + r.width / 2 - 14) + 'px';
+    dot.style.top  = (r.top  + r.height / 2 - 14) + 'px';
+    dot.style.background = delta > 0 ? 'rgba(192,57,43,0.55)' : 'rgba(120,120,120,0.45)';
+    document.body.appendChild(dot);
+    dot.addEventListener('animationend', () => dot.remove());
+  }}
+
+  document.addEventListener('click', function(e) {{
+    const btn = e.target.closest('.vbtn');
+    if (!btn || btn.disabled) return;
+    const delta = btn.textContent.trim() === '+' ? 1 : -1;
+    playVoteSound(delta);
+    spawnBurst(btn, delta);
+  }}, true);
+
   async function commitVotes() {{
+    if (!currentUser) {{ showToast('Please sign in to save your votes'); return; }}
     const btn = document.getElementById('submit-btn');
     btn.disabled = true; btn.textContent = 'Saving…';
     try {{
@@ -467,7 +578,14 @@ def build_page(dish, rests):
           if (!r.ok) throw new Error('delete failed');
         }}
       }}
+      for (const rid of ids) {{
+        const nv = myVotes[rid] || 0, ov = savedVotes[rid] || 0, delta = nv - ov;
+        if (delta === 0) continue;
+        const rest = restaurants.find(r => r.id === rid);
+        if (rest) rest.total_votes = (rest.total_votes || 0) + delta;
+      }}
       savedVotes = {{ ...myVotes }};
+      renderTable();
       showToast('Votes saved!');
       await loadRestaurants();
     }} catch {{ showToast('Error saving votes. Please try again.'); }}

@@ -729,7 +729,7 @@
 
   body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  header { background: var(--red); color: white; padding: 0 24px; }
+  header { background: linear-gradient(135deg, #C0392B 0%, #D45010 60%, #E06820 100%); color: white; padding: 0 24px; }
   .header-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; }
   .header-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
   .back-link { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 18px; line-height: 1; flex-shrink: 0; transition: color 0.15s; }
@@ -748,31 +748,44 @@
   .votes-bubble .pips { display: flex; gap: 3px; }
   .pip { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.35); transition: background 0.2s; }
   .pip.used { background: white; }
+  @keyframes pip-pop { 0% { transform: scale(1); } 45% { transform: scale(1.75); } 72% { transform: scale(0.82); } 100% { transform: scale(1); } }
+  .pip.pip-pop { animation: pip-pop 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
   .submit-btn { background: white; color: var(--info); border: none; padding: 6px 16px; border-radius: 99px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s; touch-action: manipulation; }
   .submit-btn:hover:not(:disabled) { background: #e8f0fe; }
   .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  .table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  table { width: 100%; border-collapse: collapse; table-layout: fixed; }
-  thead th { font-size: 10px; font-weight: 500; color: var(--hint); letter-spacing: 0.05em; text-transform: uppercase; padding: 10px 14px; border-bottom: 1px solid var(--border); text-align: left; background: #faf9f7; }
-  thead th.r { text-align: right; }
-  thead th.count-cell { font-size: 10px; color: var(--hint); }
-  tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: #faf9f7; }
-  td { padding: 12px 14px; vertical-align: middle; }
-  .rest-cell { overflow: hidden; }
-  .rest-cell .name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .rest-cell .addr { font-size: 12px; color: var(--hint); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .count-cell { font-size: 12px; color: var(--muted); text-align: right; white-space: nowrap; width: 70px; }
-  .vote-cell { text-align: right; width: 72px; }
-  .vctrl { display: inline-flex; align-items: center; gap: 4px; }
-  .vbtn { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s; font-family: 'DM Sans', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .card-list { display: flex; flex-direction: column; gap: 8px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; transition: box-shadow 0.15s, border-color 0.15s; position: relative; overflow: hidden; }
+  .card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.07); border-color: #d0cbc5; }
+  .card-top { display: flex; align-items: center; gap: 12px; }
+  .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  .rank-badge.gold   { background: #FFF3CD; color: #92621A; border: 1.5px solid #F0C040; }
+  .rank-badge.silver { background: #F0F0F0; color: #5A5A5A; border: 1.5px solid #B8B8B8; }
+  .rank-badge.bronze { background: #FDEBD0; color: #7D4A1E; border: 1.5px solid #D4813A; }
+  .rank-badge.plain  { font-size: 11px; font-weight: 500; color: var(--hint); background: none; border: none; }
+  .card-info { flex: 1; min-width: 0; }
+  .card-info .name { font-size: 14px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-info .addr { font-size: 12px; color: var(--hint); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-bottom { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .vote-count { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .card.voted { background: #fefaf9; border-color: #e0bab5; }
+  .card.rank-gold   { background: #FFFBEB; border-color: #F0C040; }
+  .card.rank-silver { background: #F8F8F8; border-color: #C8C8C8; }
+  .card.rank-bronze { background: #FFF8F2; border-color: #D09060; }
+  .card.rank-gold:hover   { box-shadow: 0 2px 12px rgba(240,192,64,0.28); }
+  .card.rank-silver:hover { box-shadow: 0 2px 10px rgba(180,180,180,0.22); }
+  .card.rank-bronze:hover { box-shadow: 0 2px 12px rgba(210,130,70,0.22); }
+  @keyframes sparkle-twinkle { 0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(20deg); } }
+  .sparkle { position: absolute; pointer-events: none; font-size: 11px; animation: sparkle-twinkle ease-in-out infinite; }
+  .vctrl { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .vbtn { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s, transform 0.08s; font-family: 'DM Sans', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .vbtn:hover:not(:disabled) { border-color: var(--red); background: var(--red-light); color: var(--red); }
   .vbtn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .vbtn:active:not(:disabled) { transform: scale(0.78); }
+  @keyframes vote-burst { 0% { transform: scale(0.6); opacity: 0.9; } 60% { transform: scale(2.4); opacity: 0.4; } 100% { transform: scale(3); opacity: 0; } }
+  .vote-burst { position: fixed; pointer-events: none; z-index: 9999; width: 28px; height: 28px; border-radius: 50%; animation: vote-burst 0.32s ease-out forwards; }
   .vnum { font-size: 12px; font-weight: 500; min-width: 16px; text-align: center; color: var(--text); }
   .vnum.active { color: var(--red); }
-  .voted-row td { background: #fefaf9; }
   .empty-state { text-align: center; padding: 48px 24px; color: var(--hint); }
   .empty-state h3 { font-size: 20px; font-weight: 400; margin-bottom: 8px; color: var(--muted); }
   .footer-note { text-align: center; font-size: 12px; color: var(--hint); margin-top: 20px; }
@@ -784,7 +797,6 @@
   .how-to p { font-size: 13px; color: var(--muted); line-height: 1.8; }
   .how-to a { color: var(--red); text-decoration: none; font-weight: 500; }
   .how-to a:hover { text-decoration: underline; }
-  .loading-row td { text-align: center; padding: 40px; color: var(--hint); font-size: 14px; }
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 99px; font-size: 14px; transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }
   .toast.show { transform: translateX(-50%) translateY(0); }
   .auth-bar { display: flex; align-items: center; flex-shrink: 0; }
@@ -792,6 +804,11 @@
   .google-btn:hover { background: #f1f3f4; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
   .signout-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 4px 12px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: background 0.15s; touch-action: manipulation; }
   .signout-btn:hover { background: rgba(255,255,255,0.3); }
+  .hero-strip { position: relative; width: 100%; height: 160px; overflow: hidden; }
+  .hero-bg { position: absolute; inset: 0; background: radial-gradient(ellipse at 25% 70%, rgba(255,180,60,0.55) 0%, transparent 55%), radial-gradient(ellipse at 75% 25%, rgba(180,55,10,0.45) 0%, transparent 50%), linear-gradient(155deg, #5C1E02 0%, #9D3E0F 30%, #C96520 55%, #E8954A 78%, #F5C87A 100%); }
+  .hero-strip img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, rgba(0,0,0,0.1) 50%, transparent 100%); }
+  .hero-label { position: absolute; bottom: 14px; left: 20px; color: #fff; font-size: 20px; font-weight: 700; letter-spacing: 0.04em; text-shadow: 0 1px 8px rgba(0,0,0,0.8); pointer-events: none; }
 
   @media (max-width: 600px) {
     .votes-bubble { font-size: 13px; padding: 8px 8px 8px 16px; bottom: 16px; }
@@ -799,15 +816,14 @@
     .submit-btn { padding: 6px 14px; font-size: 12px; }
     header { padding: 0 16px; }
     header h1 { font-size: clamp(12px,3.5vw,16px); }
-    td { padding: 10px 6px; }
-    thead th { padding: 10px 6px; }
+    .card { padding: 10px 12px; }
+    .card-info .name { font-size: 13px; }
     .vbtn { width: 34px; height: 34px; font-size: 17px; }
     .vnum { font-size: 13px; min-width: 18px; }
-    .vote-cell { width: auto; }
   }
 </style>
 <noscript><style>
-  .vote-cell, thead th:last-child, .votes-bubble, .auth-bar { display: none !important; }
+  .vctrl, .votes-bubble, .auth-bar { display: none !important; }
   .noscript-note { display: block !important; }
 </style></noscript>
 </head>
@@ -825,6 +841,12 @@
   </div>
 </header>
 
+<div class="hero-strip">
+  <img src="/images/hokkien-mee.jpg" alt="Hokkien Mee">
+  <div class="hero-overlay"></div>
+  <div class="hero-label">Hokkien Mee</div>
+</div>
+
 <div class="container">
 
   <div class="noscript-note">Voting requires JavaScript. The restaurant rankings below reflect the latest community votes.</div>
@@ -840,690 +862,871 @@
     <input class="search-input" id="search-input" type="search" placeholder="Search restaurants…" oninput="onSearch(this.value)">
   </div>
 
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Restaurant</th>
-          <th class="r count-cell">Total Votes</th>
-          <th class="r">Your vote</th>
-        </tr>
-      </thead>
-      <tbody id="table-body">
-        <tr id="row-315">
-          <td class="rest-cell">
-            <div class="name">Changi Village Fried Hokkien Mee</div>
-            <div class="addr">11 Woodlands Cl, #01-46, Singapore</div>
-          </td>
-          <td class="count-cell" id="count-315">3</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(315,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-315">0</span>
-              <button class="vbtn" onclick="changeVote(315,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-286">
-          <td class="rest-cell">
-            <div class="name">Shiok Hokkien Mee Bedok</div>
-            <div class="addr">412 Bedok North Ave 2, #01-114, Singapore 460412</div>
-          </td>
-          <td class="count-cell" id="count-286">1</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(286,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-286">0</span>
-              <button class="vbtn" onclick="changeVote(286,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-284">
-          <td class="rest-cell">
-            <div class="name">Singapore Fried Hokkien Mee</div>
-            <div class="addr">90 Whampoa Dr, #01-32, Singapore 320090</div>
-          </td>
-          <td class="count-cell" id="count-284">1</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(284,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-284">0</span>
-              <button class="vbtn" onclick="changeVote(284,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-296">
-          <td class="rest-cell">
-            <div class="name">Hong Heng Fried Sotong Prawn Mee</div>
-            <div class="addr">30 Seng Poh Rd, #02-01, Singapore 168898</div>
-          </td>
-          <td class="count-cell" id="count-296">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(296,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-296">0</span>
-              <button class="vbtn" onclick="changeVote(296,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-283">
-          <td class="rest-cell">
-            <div class="name">Shiok Hokkien Mee Golden Mile</div>
-            <div class="addr">505 Beach Rd, #01-57, Singapore 199583</div>
-          </td>
-          <td class="count-cell" id="count-283">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(283,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-283">0</span>
-              <button class="vbtn" onclick="changeVote(283,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-305">
-          <td class="rest-cell">
-            <div class="name">Xiao Di KKM &amp; Hokkien Mee</div>
-            <div class="addr">347 Jurong East Ave 1, #01-222, Singapore 600347</div>
-          </td>
-          <td class="count-cell" id="count-305">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(305,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-305">0</span>
-              <button class="vbtn" onclick="changeVote(305,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-294">
-          <td class="rest-cell">
-            <div class="name">Xiao Di Fried Prawn Noodle</div>
-            <div class="addr">153 Serangoon North Ave 1, #01-512, Singapore 550153</div>
-          </td>
-          <td class="count-cell" id="count-294">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(294,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-294">0</span>
-              <button class="vbtn" onclick="changeVote(294,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-297">
-          <td class="rest-cell">
-            <div class="name">Mian Wang 1971</div>
-            <div class="addr">323 Bukit Batok Street 33, Singapore 650323</div>
-          </td>
-          <td class="count-cell" id="count-297">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(297,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-297">0</span>
-              <button class="vbtn" onclick="changeVote(297,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-51">
-          <td class="rest-cell">
-            <div class="name">Outram Park Fried Hokkien Mee</div>
-            <div class="addr">Blk 531A Upper Cross Street, #02-17, Hong Lim Market &amp; Food Centre, Singapore 051531</div>
-          </td>
-          <td class="count-cell" id="count-51">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(51,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-51">0</span>
-              <button class="vbtn" onclick="changeVote(51,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-46">
-          <td class="rest-cell">
-            <div class="name">No. 18 Zion Road Fried Hokkien Mee</div>
-            <div class="addr">70 Zion Road, #01-17, Zion Riverside Food Centre, Singapore 247792</div>
-          </td>
-          <td class="count-cell" id="count-46">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(46,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-46">0</span>
-              <button class="vbtn" onclick="changeVote(46,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-306">
-          <td class="rest-cell">
-            <div class="name">777 Fried Hokkien Prawn Mee</div>
-            <div class="addr">155 Bukit Batok Street 11, Singapore 650155</div>
-          </td>
-          <td class="count-cell" id="count-306">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(306,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-306">0</span>
-              <button class="vbtn" onclick="changeVote(306,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-304">
-          <td class="rest-cell">
-            <div class="name">Yong Heng Fried Squid Prawn Mee</div>
-            <div class="addr">155 Bukit Batok Street 11, Singapore 650155</div>
-          </td>
-          <td class="count-cell" id="count-304">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(304,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-304">0</span>
-              <button class="vbtn" onclick="changeVote(304,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-52">
-          <td class="rest-cell">
-            <div class="name">Original Serangoon Hokkien Mee</div>
-            <div class="addr">124 Serangoon North Ave 1, #01-10, Serangoon Garden Market, Singapore 550124</div>
-          </td>
-          <td class="count-cell" id="count-52">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(52,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-52">0</span>
-              <button class="vbtn" onclick="changeVote(52,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-279">
-          <td class="rest-cell">
-            <div class="name">Xia Mee The Hokkien Club Prawn Noodle</div>
-            <div class="addr">1 HarbourFront Walk, #B2-40, Singapore 098585</div>
-          </td>
-          <td class="count-cell" id="count-279">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(279,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-279">0</span>
-              <button class="vbtn" onclick="changeVote(279,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-303">
-          <td class="rest-cell">
-            <div class="name">Yi Ji Fried Hokkien Prawn Mee</div>
-            <div class="addr">51 Old Airport Rd, #01-102, Singapore 390051</div>
-          </td>
-          <td class="count-cell" id="count-303">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(303,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-303">0</span>
-              <button class="vbtn" onclick="changeVote(303,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-53">
-          <td class="rest-cell">
-            <div class="name">Teck Kee Fried Hokkien Mee</div>
-            <div class="addr">Blk 79 Circuit Road, #01-601, Circuit Road Hawker Centre, Singapore 370079</div>
-          </td>
-          <td class="count-cell" id="count-53">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(53,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-53">0</span>
-              <button class="vbtn" onclick="changeVote(53,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-301">
-          <td class="rest-cell">
-            <div class="name">Zhup Zhup | Prawn Noodle | Hokkien Mee | Pao Fan</div>
-            <div class="addr">458 MacPherson Rd, Singapore 368176</div>
-          </td>
-          <td class="count-cell" id="count-301">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(301,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-301">0</span>
-              <button class="vbtn" onclick="changeVote(301,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-314">
-          <td class="rest-cell">
-            <div class="name">Li Xing Fried Hokkien Prawn Mee</div>
-            <div class="addr">2A Jln Seh Chuan, #01-013 Wet Market &amp; Food Centre, Singapore</div>
-          </td>
-          <td class="count-cell" id="count-314">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(314,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-314">0</span>
-              <button class="vbtn" onclick="changeVote(314,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-308">
-          <td class="rest-cell">
-            <div class="name">Blue Star Fried Hokkien Mee</div>
-            <div class="addr">105 Hougang Ave 1, #02-26, Singapore 530105</div>
-          </td>
-          <td class="count-cell" id="count-308">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(308,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-308">0</span>
-              <button class="vbtn" onclick="changeVote(308,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-45">
-          <td class="rest-cell">
-            <div class="name">Nam Sing Hokkien Mee</div>
-            <div class="addr">Blk 51 Old Airport Road, #01-32, Old Airport Road Food Centre, Singapore 390051</div>
-          </td>
-          <td class="count-cell" id="count-45">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(45,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-45">0</span>
-              <button class="vbtn" onclick="changeVote(45,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-313">
-          <td class="rest-cell">
-            <div class="name">Yang Zhou Fried Hokkien Sotong Prawn Mee</div>
-            <div class="addr">40 Beo Cres, #01-16, Singapore 160040</div>
-          </td>
-          <td class="count-cell" id="count-313">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(313,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-313">0</span>
-              <button class="vbtn" onclick="changeVote(313,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-291">
-          <td class="rest-cell">
-            <div class="name">Chuan Fried Hokkien Prawn Mee</div>
-            <div class="addr">Block 80 Circuit Rd, #02-05, Singapore 370080</div>
-          </td>
-          <td class="count-cell" id="count-291">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(291,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-291">0</span>
-              <button class="vbtn" onclick="changeVote(291,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-295">
-          <td class="rest-cell">
-            <div class="name">Shiok Hokkien Mee Tiong Bahru</div>
-            <div class="addr">11B Boon Tiong Rd, Singapore 163011</div>
-          </td>
-          <td class="count-cell" id="count-295">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(295,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-295">0</span>
-              <button class="vbtn" onclick="changeVote(295,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-48">
-          <td class="rest-cell">
-            <div class="name">Geylang Lor 29 Hokkien Mee</div>
-            <div class="addr">396 East Coast Road, Lor 29 Geylang, Singapore 428994</div>
-          </td>
-          <td class="count-cell" id="count-48">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(48,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-48">0</span>
-              <button class="vbtn" onclick="changeVote(48,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-293">
-          <td class="rest-cell">
-            <div class="name">Ah Jie Hokkien Mee</div>
-            <div class="addr">Blk 721 Ang Mo Kio Ave 8, #01-2811, Singapore 560721</div>
-          </td>
-          <td class="count-cell" id="count-293">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(293,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-293">0</span>
-              <button class="vbtn" onclick="changeVote(293,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-281">
-          <td class="rest-cell">
-            <div class="name">Shiok Hokkien Mee Beauty World</div>
-            <div class="addr">144 Upper Bukit Timah Rd, #04-52, Singapore 588177</div>
-          </td>
-          <td class="count-cell" id="count-281">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(281,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-281">0</span>
-              <button class="vbtn" onclick="changeVote(281,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-299">
-          <td class="rest-cell">
-            <div class="name">Hainan Fried Hokkien Prawn Mee</div>
-            <div class="addr">505 Beach Rd, #B1-34 Golden Mile Food Centre, Singapore 199583</div>
-          </td>
-          <td class="count-cell" id="count-299">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(299,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-299">0</span>
-              <button class="vbtn" onclick="changeVote(299,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-298">
-          <td class="rest-cell">
-            <div class="name">The Neighbourwok @ Bukit Batok</div>
-            <div class="addr">177 Bukit Batok West Ave 8, Get Together Coffeeshop, Singapore 650177</div>
-          </td>
-          <td class="count-cell" id="count-298">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(298,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-298">0</span>
-              <button class="vbtn" onclick="changeVote(298,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-309">
-          <td class="rest-cell">
-            <div class="name">Ho Huat Fried Hokkien Prawn Mee</div>
-            <div class="addr">221B Boon Lay Pl, #01-135, Singapore 642221</div>
-          </td>
-          <td class="count-cell" id="count-309">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(309,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-309">0</span>
-              <button class="vbtn" onclick="changeVote(309,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-287">
-          <td class="rest-cell">
-            <div class="name">Shiok Hokkien Mee Sengkang</div>
-            <div class="addr">279 Sengkang E Ave, Singapore 540279</div>
-          </td>
-          <td class="count-cell" id="count-287">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(287,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-287">0</span>
-              <button class="vbtn" onclick="changeVote(287,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-292">
-          <td class="rest-cell">
-            <div class="name">Ah Huat Hokkien Prawn Mee (Toa Payoh)</div>
-            <div class="addr">51 Lor 6 Toa Payoh, #01-62, Singapore 310051</div>
-          </td>
-          <td class="count-cell" id="count-292">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(292,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-292">0</span>
-              <button class="vbtn" onclick="changeVote(292,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-285">
-          <td class="rest-cell">
-            <div class="name">Hokkien Man Hokkien Mee</div>
-            <div class="addr">19 Lor 7 Toa Payoh, Singapore 310019</div>
-          </td>
-          <td class="count-cell" id="count-285">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(285,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-285">0</span>
-              <button class="vbtn" onclick="changeVote(285,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-288">
-          <td class="rest-cell">
-            <div class="name">Kim's Famous Fried Hokkien Prawn Mee</div>
-            <div class="addr">62B Jln Eunos, Singapore 419510</div>
-          </td>
-          <td class="count-cell" id="count-288">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(288,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-288">0</span>
-              <button class="vbtn" onclick="changeVote(288,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-50">
-          <td class="rest-cell">
-            <div class="name">Heng Heng Fried Hokkien Mee</div>
-            <div class="addr">Blk 127 Toa Payoh Lor 1, #02-24, Toa Payoh Vista Market, Singapore 310127</div>
-          </td>
-          <td class="count-cell" id="count-50">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(50,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-50">0</span>
-              <button class="vbtn" onclick="changeVote(50,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-49">
-          <td class="rest-cell">
-            <div class="name">Ah Hock Fried Hokkien Mee</div>
-            <div class="addr">Blk 726 Clementi West Street 2, #01-258, Clementi 726 Market &amp; Food Centre, Singapore 120726</div>
-          </td>
-          <td class="count-cell" id="count-49">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(49,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-49">0</span>
-              <button class="vbtn" onclick="changeVote(49,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-316">
-          <td class="rest-cell">
-            <div class="name">Authentic Fried Hokkien Mee</div>
-            <div class="addr">79A Circuit Rd, #01-82, Singapore</div>
-          </td>
-          <td class="count-cell" id="count-316">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(316,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-316">0</span>
-              <button class="vbtn" onclick="changeVote(316,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-312">
-          <td class="rest-cell">
-            <div class="name">Hock Kee Prawn Noodles</div>
-            <div class="addr">280 Bishan Street 24, Singapore 570279</div>
-          </td>
-          <td class="count-cell" id="count-312">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(312,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-312">0</span>
-              <button class="vbtn" onclick="changeVote(312,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-47">
-          <td class="rest-cell">
-            <div class="name">Kim Keat Hokkien Mee</div>
-            <div class="addr">Blk 92 Toa Payoh Lor 4, #01-264, Kim Keat Palm Market &amp; Food Centre, Singapore 310092</div>
-          </td>
-          <td class="count-cell" id="count-47">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(47,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-47">0</span>
-              <button class="vbtn" onclick="changeVote(47,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-310">
-          <td class="rest-cell">
-            <div class="name">618 Hokkien Mee</div>
-            <div class="addr">618 Yishun Ring Rd, Singapore 760618</div>
-          </td>
-          <td class="count-cell" id="count-310">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(310,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-310">0</span>
-              <button class="vbtn" onclick="changeVote(310,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-290">
-          <td class="rest-cell">
-            <div class="name">Original Simon Road Hokkien Mee</div>
-            <div class="addr">820 Tampines Street 81, #01-506 Tampines Polyview, Singapore 520820</div>
-          </td>
-          <td class="count-cell" id="count-290">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(290,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-290">0</span>
-              <button class="vbtn" onclick="changeVote(290,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-289">
-          <td class="rest-cell">
-            <div class="name">Shiok Hokkien Mee Bishan</div>
-            <div class="addr">Block 504 Bishan St 11, #01-444, Singapore 570504</div>
-          </td>
-          <td class="count-cell" id="count-289">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(289,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-289">0</span>
-              <button class="vbtn" onclick="changeVote(289,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-300">
-          <td class="rest-cell">
-            <div class="name">You Fu Fried Hokkien Prawn Noodle (Chinatown)</div>
-            <div class="addr">335 Smith St, #02-186, Singapore 050335</div>
-          </td>
-          <td class="count-cell" id="count-300">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(300,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-300">0</span>
-              <button class="vbtn" onclick="changeVote(300,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-317">
-          <td class="rest-cell">
-            <div class="name">Yi Ji Fried Hokkien Prawn Mee (Upper Serangoon)</div>
-            <div class="addr">965 Upper Serangoon Rd, Singapore</div>
-          </td>
-          <td class="count-cell" id="count-317">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(317,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-317">0</span>
-              <button class="vbtn" onclick="changeVote(317,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-307">
-          <td class="rest-cell">
-            <div class="name">Hoe Hokkien Mee</div>
-            <div class="addr">861 N Bridge Rd, Singapore 198783</div>
-          </td>
-          <td class="count-cell" id="count-307">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(307,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-307">0</span>
-              <button class="vbtn" onclick="changeVote(307,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-311">
-          <td class="rest-cell">
-            <div class="name">Ho Ji Fried Hokkien Prawn Noodles</div>
-            <div class="addr">162 Ang Mo Kio Ave 4, #01-39 Mayflower Market &amp; Food Centre, Singapore 560162</div>
-          </td>
-          <td class="count-cell" id="count-311">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(311,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-311">0</span>
-              <button class="vbtn" onclick="changeVote(311,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-282">
-          <td class="rest-cell">
-            <div class="name">Come Daily Fried Hokkien Prawn Mee</div>
-            <div class="addr">127 Lor 1 Toa Payoh, #02-27 West Market &amp; Food Centre, Singapore 310127</div>
-          </td>
-          <td class="count-cell" id="count-282">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(282,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-282">0</span>
-              <button class="vbtn" onclick="changeVote(282,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-44">
-          <td class="rest-cell">
-            <div class="name">Swee Guan Hokkien Mee</div>
-            <div class="addr">396 East Coast Road, Singapore 428994</div>
-          </td>
-          <td class="count-cell" id="count-44">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(44,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-44">0</span>
-              <button class="vbtn" onclick="changeVote(44,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-        <tr id="row-280">
-          <td class="rest-cell">
-            <div class="name">Ah Yu Fried Prawn Noodle Hokkien Mee</div>
-            <div class="addr">1220 ECP, #01-36, stall 36, Singapore 468960</div>
-          </td>
-          <td class="count-cell" id="count-280">0</td>
-          <td class="vote-cell">
-            <div class="vctrl">
-              <button class="vbtn" onclick="changeVote(280,-1)" disabled>−</button>
-              <span class="vnum" id="vnum-280">0</span>
-              <button class="vbtn" onclick="changeVote(280,1)" disabled>+</button>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+  <div id="table-body" class="card-list">
+    <div class="card rank-gold" id="row-315">
+      <span class="sparkle" style="top:7px;right:55px;color:#D4A800;animation-duration:2.2s;animation-delay:0s;">✦</span><span class="sparkle" style="top:18px;right:32px;color:#D4A800;animation-duration:1.85s;animation-delay:0.75s;">✦</span><span class="sparkle" style="top:6px;right:18px;color:#D4A800;animation-duration:2.6s;animation-delay:1.4s;">✦</span><span class="sparkle" style="top:20px;right:62px;color:#D4A800;animation-duration:1.6s;animation-delay:0.4s;">✦</span>
+      <div class="card-top">
+        <span class="rank-badge gold">🥇</span>
+        <div class="card-info">
+          <div class="name">Changi Village Fried Hokkien Mee</div>
+          <div class="addr">11 Woodlands Cl, #01-46, Singapore</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-315">3 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(315,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-315">0</span>
+          <button class="vbtn" onclick="changeVote(315,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card rank-silver" id="row-286">
+      <span class="sparkle" style="top:7px;right:55px;color:#999;animation-duration:2.2s;animation-delay:0s;">✦</span><span class="sparkle" style="top:18px;right:32px;color:#999;animation-duration:1.85s;animation-delay:0.75s;">✦</span><span class="sparkle" style="top:6px;right:18px;color:#999;animation-duration:2.6s;animation-delay:1.4s;">✦</span><span class="sparkle" style="top:20px;right:62px;color:#999;animation-duration:1.6s;animation-delay:0.4s;">✦</span>
+      <div class="card-top">
+        <span class="rank-badge silver">🥈</span>
+        <div class="card-info">
+          <div class="name">Shiok Hokkien Mee Bedok</div>
+          <div class="addr">412 Bedok North Ave 2, #01-114, Singapore 460412</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-286">1 vote</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(286,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-286">0</span>
+          <button class="vbtn" onclick="changeVote(286,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card rank-bronze" id="row-284">
+      <span class="sparkle" style="top:7px;right:55px;color:#C07030;animation-duration:2.2s;animation-delay:0s;">✦</span><span class="sparkle" style="top:18px;right:32px;color:#C07030;animation-duration:1.85s;animation-delay:0.75s;">✦</span><span class="sparkle" style="top:6px;right:18px;color:#C07030;animation-duration:2.6s;animation-delay:1.4s;">✦</span><span class="sparkle" style="top:20px;right:62px;color:#C07030;animation-duration:1.6s;animation-delay:0.4s;">✦</span>
+      <div class="card-top">
+        <span class="rank-badge bronze">🥉</span>
+        <div class="card-info">
+          <div class="name">Singapore Fried Hokkien Mee</div>
+          <div class="addr">90 Whampoa Dr, #01-32, Singapore 320090</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-284">1 vote</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(284,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-284">0</span>
+          <button class="vbtn" onclick="changeVote(284,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-296">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">4</span>
+        <div class="card-info">
+          <div class="name">Hong Heng Fried Sotong Prawn Mee</div>
+          <div class="addr">30 Seng Poh Rd, #02-01, Singapore 168898</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-296">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(296,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-296">0</span>
+          <button class="vbtn" onclick="changeVote(296,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-283">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">5</span>
+        <div class="card-info">
+          <div class="name">Shiok Hokkien Mee Golden Mile</div>
+          <div class="addr">505 Beach Rd, #01-57, Singapore 199583</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-283">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(283,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-283">0</span>
+          <button class="vbtn" onclick="changeVote(283,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-305">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">6</span>
+        <div class="card-info">
+          <div class="name">Xiao Di KKM &amp; Hokkien Mee</div>
+          <div class="addr">347 Jurong East Ave 1, #01-222, Singapore 600347</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-305">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(305,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-305">0</span>
+          <button class="vbtn" onclick="changeVote(305,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-294">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">7</span>
+        <div class="card-info">
+          <div class="name">Xiao Di Fried Prawn Noodle</div>
+          <div class="addr">153 Serangoon North Ave 1, #01-512, Singapore 550153</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-294">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(294,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-294">0</span>
+          <button class="vbtn" onclick="changeVote(294,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-297">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">8</span>
+        <div class="card-info">
+          <div class="name">Mian Wang 1971</div>
+          <div class="addr">323 Bukit Batok Street 33, Singapore 650323</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-297">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(297,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-297">0</span>
+          <button class="vbtn" onclick="changeVote(297,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-51">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">9</span>
+        <div class="card-info">
+          <div class="name">Outram Park Fried Hokkien Mee</div>
+          <div class="addr">Blk 531A Upper Cross Street, #02-17, Hong Lim Market &amp; Food Centre, Singapore 051531</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-51">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(51,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-51">0</span>
+          <button class="vbtn" onclick="changeVote(51,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-46">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">10</span>
+        <div class="card-info">
+          <div class="name">No. 18 Zion Road Fried Hokkien Mee</div>
+          <div class="addr">70 Zion Road, #01-17, Zion Riverside Food Centre, Singapore 247792</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-46">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(46,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-46">0</span>
+          <button class="vbtn" onclick="changeVote(46,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-306">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">11</span>
+        <div class="card-info">
+          <div class="name">777 Fried Hokkien Prawn Mee</div>
+          <div class="addr">155 Bukit Batok Street 11, Singapore 650155</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-306">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(306,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-306">0</span>
+          <button class="vbtn" onclick="changeVote(306,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-304">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">12</span>
+        <div class="card-info">
+          <div class="name">Yong Heng Fried Squid Prawn Mee</div>
+          <div class="addr">155 Bukit Batok Street 11, Singapore 650155</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-304">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(304,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-304">0</span>
+          <button class="vbtn" onclick="changeVote(304,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-52">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">13</span>
+        <div class="card-info">
+          <div class="name">Original Serangoon Hokkien Mee</div>
+          <div class="addr">124 Serangoon North Ave 1, #01-10, Serangoon Garden Market, Singapore 550124</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-52">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(52,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-52">0</span>
+          <button class="vbtn" onclick="changeVote(52,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-279">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">14</span>
+        <div class="card-info">
+          <div class="name">Xia Mee The Hokkien Club Prawn Noodle</div>
+          <div class="addr">1 HarbourFront Walk, #B2-40, Singapore 098585</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-279">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(279,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-279">0</span>
+          <button class="vbtn" onclick="changeVote(279,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-303">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">15</span>
+        <div class="card-info">
+          <div class="name">Yi Ji Fried Hokkien Prawn Mee</div>
+          <div class="addr">51 Old Airport Rd, #01-102, Singapore 390051</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-303">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(303,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-303">0</span>
+          <button class="vbtn" onclick="changeVote(303,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-53">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">16</span>
+        <div class="card-info">
+          <div class="name">Teck Kee Fried Hokkien Mee</div>
+          <div class="addr">Blk 79 Circuit Road, #01-601, Circuit Road Hawker Centre, Singapore 370079</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-53">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(53,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-53">0</span>
+          <button class="vbtn" onclick="changeVote(53,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-301">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">17</span>
+        <div class="card-info">
+          <div class="name">Zhup Zhup | Prawn Noodle | Hokkien Mee | Pao Fan</div>
+          <div class="addr">458 MacPherson Rd, Singapore 368176</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-301">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(301,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-301">0</span>
+          <button class="vbtn" onclick="changeVote(301,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-314">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">18</span>
+        <div class="card-info">
+          <div class="name">Li Xing Fried Hokkien Prawn Mee</div>
+          <div class="addr">2A Jln Seh Chuan, #01-013 Wet Market &amp; Food Centre, Singapore</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-314">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(314,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-314">0</span>
+          <button class="vbtn" onclick="changeVote(314,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-308">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">19</span>
+        <div class="card-info">
+          <div class="name">Blue Star Fried Hokkien Mee</div>
+          <div class="addr">105 Hougang Ave 1, #02-26, Singapore 530105</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-308">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(308,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-308">0</span>
+          <button class="vbtn" onclick="changeVote(308,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-45">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">20</span>
+        <div class="card-info">
+          <div class="name">Nam Sing Hokkien Mee</div>
+          <div class="addr">Blk 51 Old Airport Road, #01-32, Old Airport Road Food Centre, Singapore 390051</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-45">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(45,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-45">0</span>
+          <button class="vbtn" onclick="changeVote(45,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-313">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">21</span>
+        <div class="card-info">
+          <div class="name">Yang Zhou Fried Hokkien Sotong Prawn Mee</div>
+          <div class="addr">40 Beo Cres, #01-16, Singapore 160040</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-313">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(313,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-313">0</span>
+          <button class="vbtn" onclick="changeVote(313,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-291">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">22</span>
+        <div class="card-info">
+          <div class="name">Chuan Fried Hokkien Prawn Mee</div>
+          <div class="addr">Block 80 Circuit Rd, #02-05, Singapore 370080</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-291">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(291,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-291">0</span>
+          <button class="vbtn" onclick="changeVote(291,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-295">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">23</span>
+        <div class="card-info">
+          <div class="name">Shiok Hokkien Mee Tiong Bahru</div>
+          <div class="addr">11B Boon Tiong Rd, Singapore 163011</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-295">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(295,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-295">0</span>
+          <button class="vbtn" onclick="changeVote(295,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-48">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">24</span>
+        <div class="card-info">
+          <div class="name">Geylang Lor 29 Hokkien Mee</div>
+          <div class="addr">396 East Coast Road, Lor 29 Geylang, Singapore 428994</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-48">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(48,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-48">0</span>
+          <button class="vbtn" onclick="changeVote(48,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-293">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">25</span>
+        <div class="card-info">
+          <div class="name">Ah Jie Hokkien Mee</div>
+          <div class="addr">Blk 721 Ang Mo Kio Ave 8, #01-2811, Singapore 560721</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-293">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(293,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-293">0</span>
+          <button class="vbtn" onclick="changeVote(293,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-281">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">26</span>
+        <div class="card-info">
+          <div class="name">Shiok Hokkien Mee Beauty World</div>
+          <div class="addr">144 Upper Bukit Timah Rd, #04-52, Singapore 588177</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-281">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(281,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-281">0</span>
+          <button class="vbtn" onclick="changeVote(281,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-299">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">27</span>
+        <div class="card-info">
+          <div class="name">Hainan Fried Hokkien Prawn Mee</div>
+          <div class="addr">505 Beach Rd, #B1-34 Golden Mile Food Centre, Singapore 199583</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-299">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(299,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-299">0</span>
+          <button class="vbtn" onclick="changeVote(299,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-298">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">28</span>
+        <div class="card-info">
+          <div class="name">The Neighbourwok @ Bukit Batok</div>
+          <div class="addr">177 Bukit Batok West Ave 8, Get Together Coffeeshop, Singapore 650177</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-298">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(298,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-298">0</span>
+          <button class="vbtn" onclick="changeVote(298,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-309">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">29</span>
+        <div class="card-info">
+          <div class="name">Ho Huat Fried Hokkien Prawn Mee</div>
+          <div class="addr">221B Boon Lay Pl, #01-135, Singapore 642221</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-309">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(309,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-309">0</span>
+          <button class="vbtn" onclick="changeVote(309,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-287">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">30</span>
+        <div class="card-info">
+          <div class="name">Shiok Hokkien Mee Sengkang</div>
+          <div class="addr">279 Sengkang E Ave, Singapore 540279</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-287">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(287,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-287">0</span>
+          <button class="vbtn" onclick="changeVote(287,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-292">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">31</span>
+        <div class="card-info">
+          <div class="name">Ah Huat Hokkien Prawn Mee (Toa Payoh)</div>
+          <div class="addr">51 Lor 6 Toa Payoh, #01-62, Singapore 310051</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-292">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(292,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-292">0</span>
+          <button class="vbtn" onclick="changeVote(292,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-285">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">32</span>
+        <div class="card-info">
+          <div class="name">Hokkien Man Hokkien Mee</div>
+          <div class="addr">19 Lor 7 Toa Payoh, Singapore 310019</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-285">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(285,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-285">0</span>
+          <button class="vbtn" onclick="changeVote(285,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-288">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">33</span>
+        <div class="card-info">
+          <div class="name">Kim's Famous Fried Hokkien Prawn Mee</div>
+          <div class="addr">62B Jln Eunos, Singapore 419510</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-288">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(288,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-288">0</span>
+          <button class="vbtn" onclick="changeVote(288,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-50">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">34</span>
+        <div class="card-info">
+          <div class="name">Heng Heng Fried Hokkien Mee</div>
+          <div class="addr">Blk 127 Toa Payoh Lor 1, #02-24, Toa Payoh Vista Market, Singapore 310127</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-50">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(50,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-50">0</span>
+          <button class="vbtn" onclick="changeVote(50,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-49">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">35</span>
+        <div class="card-info">
+          <div class="name">Ah Hock Fried Hokkien Mee</div>
+          <div class="addr">Blk 726 Clementi West Street 2, #01-258, Clementi 726 Market &amp; Food Centre, Singapore 120726</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-49">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(49,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-49">0</span>
+          <button class="vbtn" onclick="changeVote(49,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-316">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">36</span>
+        <div class="card-info">
+          <div class="name">Authentic Fried Hokkien Mee</div>
+          <div class="addr">79A Circuit Rd, #01-82, Singapore</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-316">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(316,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-316">0</span>
+          <button class="vbtn" onclick="changeVote(316,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-312">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">37</span>
+        <div class="card-info">
+          <div class="name">Hock Kee Prawn Noodles</div>
+          <div class="addr">280 Bishan Street 24, Singapore 570279</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-312">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(312,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-312">0</span>
+          <button class="vbtn" onclick="changeVote(312,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-47">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">38</span>
+        <div class="card-info">
+          <div class="name">Kim Keat Hokkien Mee</div>
+          <div class="addr">Blk 92 Toa Payoh Lor 4, #01-264, Kim Keat Palm Market &amp; Food Centre, Singapore 310092</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-47">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(47,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-47">0</span>
+          <button class="vbtn" onclick="changeVote(47,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-310">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">39</span>
+        <div class="card-info">
+          <div class="name">618 Hokkien Mee</div>
+          <div class="addr">618 Yishun Ring Rd, Singapore 760618</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-310">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(310,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-310">0</span>
+          <button class="vbtn" onclick="changeVote(310,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-290">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">40</span>
+        <div class="card-info">
+          <div class="name">Original Simon Road Hokkien Mee</div>
+          <div class="addr">820 Tampines Street 81, #01-506 Tampines Polyview, Singapore 520820</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-290">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(290,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-290">0</span>
+          <button class="vbtn" onclick="changeVote(290,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-289">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">41</span>
+        <div class="card-info">
+          <div class="name">Shiok Hokkien Mee Bishan</div>
+          <div class="addr">Block 504 Bishan St 11, #01-444, Singapore 570504</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-289">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(289,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-289">0</span>
+          <button class="vbtn" onclick="changeVote(289,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-300">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">42</span>
+        <div class="card-info">
+          <div class="name">You Fu Fried Hokkien Prawn Noodle (Chinatown)</div>
+          <div class="addr">335 Smith St, #02-186, Singapore 050335</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-300">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(300,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-300">0</span>
+          <button class="vbtn" onclick="changeVote(300,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-317">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">43</span>
+        <div class="card-info">
+          <div class="name">Yi Ji Fried Hokkien Prawn Mee (Upper Serangoon)</div>
+          <div class="addr">965 Upper Serangoon Rd, Singapore</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-317">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(317,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-317">0</span>
+          <button class="vbtn" onclick="changeVote(317,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-307">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">44</span>
+        <div class="card-info">
+          <div class="name">Hoe Hokkien Mee</div>
+          <div class="addr">861 N Bridge Rd, Singapore 198783</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-307">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(307,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-307">0</span>
+          <button class="vbtn" onclick="changeVote(307,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-311">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">45</span>
+        <div class="card-info">
+          <div class="name">Ho Ji Fried Hokkien Prawn Noodles</div>
+          <div class="addr">162 Ang Mo Kio Ave 4, #01-39 Mayflower Market &amp; Food Centre, Singapore 560162</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-311">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(311,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-311">0</span>
+          <button class="vbtn" onclick="changeVote(311,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-282">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">46</span>
+        <div class="card-info">
+          <div class="name">Come Daily Fried Hokkien Prawn Mee</div>
+          <div class="addr">127 Lor 1 Toa Payoh, #02-27 West Market &amp; Food Centre, Singapore 310127</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-282">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(282,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-282">0</span>
+          <button class="vbtn" onclick="changeVote(282,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-44">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">47</span>
+        <div class="card-info">
+          <div class="name">Swee Guan Hokkien Mee</div>
+          <div class="addr">396 East Coast Road, Singapore 428994</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-44">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(44,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-44">0</span>
+          <button class="vbtn" onclick="changeVote(44,1)">+</button>
+        </div>
+      </div>
+    </div>
+    <div class="card" id="row-280">
+      
+      <div class="card-top">
+        <span class="rank-badge plain">48</span>
+        <div class="card-info">
+          <div class="name">Ah Yu Fried Prawn Noodle Hokkien Mee</div>
+          <div class="addr">1220 ECP, #01-36, stall 36, Singapore 468960</div>
+        </div>
+      </div>
+      <div class="card-bottom">
+        <span class="vote-count" id="count-280">0 votes</span>
+        <div class="vctrl">
+          <button class="vbtn" onclick="changeVote(280,-1)" disabled>−</button>
+          <span class="vnum" id="vnum-280">0</span>
+          <button class="vbtn" onclick="changeVote(280,1)">+</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <p class="footer-note" id="footer-note">48 restaurants · sorted by community votes</p>
@@ -1654,9 +1857,9 @@
     btn.disabled  = !changed;
     btn.textContent = changed ? 'Save (' + used + ')' : (used > 0 ? 'Saved' : 'Save');
 
-    const tbody = document.getElementById('table-body');
+    const list = document.getElementById('table-body');
     if (!restaurants.length) {
-      tbody.innerHTML = '<tr><td colspan="3"><div class="empty-state"><h3>No restaurants yet</h3></div></td></tr>';
+      list.innerHTML = '<div class="empty-state"><h3>No restaurants yet</h3></div>';
       document.getElementById('footer-note').textContent = '';
       return;
     }
@@ -1666,22 +1869,47 @@
       : restaurants;
 
     if (!filtered.length) {
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="3">No restaurants match "' + document.getElementById('search-input').value + '".</td></tr>';
+      list.innerHTML = '<div class="empty-state"><h3>No matching restaurants</h3></div>';
       document.getElementById('footer-note').textContent = '';
       return;
     }
 
-    tbody.innerHTML = filtered.map(r => {
+    const rankOf = searchQuery ? {} : Object.fromEntries(restaurants.map((r, i) => [r.id, i + 1]));
+    list.innerHTML = filtered.map(r => {
       const myV = myVotes[r.id] || 0;
-      return '<tr class="' + (myV > 0 ? 'voted-row' : '') + '" id="row-' + r.id + '">' +
-        '<td class="rest-cell"><div class="name">' + r.name + '</div>' +
-        (r.address ? '<div class="addr">' + r.address + '</div>' : '') + '</td>' +
-        '<td class="count-cell" id="count-' + r.id + '">' + (r.total_votes || 0).toLocaleString() + '</td>' +
-        '<td class="vote-cell"><div class="vctrl">' +
-          '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (!currentUser || myV <= 0 ? ' disabled' : '') + '>−</button>' +
-          '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
-          '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (!currentUser || remaining <= 0 ? ' disabled' : '') + '>+</button>' +
-        '</div></td></tr>';
+      const rank = rankOf[r.id];
+      const medalClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'plain';
+      const medalLabel = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : (rank || '');
+      const badge = '<span class="rank-badge ' + medalClass + '">' + medalLabel + '</span>';
+      const cardClass = ['card', myV > 0 ? 'voted' : '',
+        rank === 1 ? 'rank-gold' : rank === 2 ? 'rank-silver' : rank === 3 ? 'rank-bronze' : ''
+      ].filter(Boolean).join(' ');
+      const votes = r.total_votes || 0;
+      const sparkleColor = rank === 1 ? '#D4A800' : rank === 2 ? '#999' : '#C07030';
+      const sparkles = rank >= 1 && rank <= 3 ? [
+        { t: 7,  r: 55, d: 0,    dur: 2.2  },
+        { t: 18, r: 32, d: 0.75, dur: 1.85 },
+        { t: 6,  r: 18, d: 1.4,  dur: 2.6  },
+        { t: 20, r: 62, d: 0.4,  dur: 1.6  },
+      ].map(s => '<span class="sparkle" style="top:' + s.t + 'px;right:' + s.r + 'px;color:' + sparkleColor + ';animation-duration:' + s.dur + 's;animation-delay:' + s.d + 's;">✦</span>').join('') : '';
+      return '<div class="' + cardClass + '" id="row-' + r.id + '">' +
+        sparkles +
+        '<div class="card-top">' +
+          badge +
+          '<div class="card-info">' +
+            '<div class="name">' + r.name + '</div>' +
+            (r.address ? '<div class="addr">' + r.address + '</div>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="card-bottom">' +
+          '<span class="vote-count" id="count-' + r.id + '">' + votes.toLocaleString() + ' vote' + (votes !== 1 ? 's' : '') + '</span>' +
+          '<div class="vctrl">' +
+            '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (myV <= 0 ? ' disabled' : '') + '>−</button>' +
+            '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
+            '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (remaining <= 0 ? ' disabled' : '') + '>+</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
     }).join('');
 
     document.getElementById('footer-note').textContent = searchQuery
@@ -1690,12 +1918,15 @@
   }
 
   function renderPips(used) {
-    document.getElementById('pips-container').innerHTML =
-      Array.from({ length: TOTAL_VOTES }, (_, i) => '<div class="pip' + (i < used ? ' used' : '') + '"></div>').join('');
+    const container = document.getElementById('pips-container');
+    const prevUsed = container.querySelectorAll('.pip.used').length;
+    container.innerHTML = Array.from({ length: TOTAL_VOTES }, (_, i) => {
+      const isUsed = i < used, isNew = isUsed && i >= prevUsed;
+      return '<div class="pip' + (isUsed ? ' used' : '') + (isNew ? ' pip-pop' : '') + '"></div>';
+    }).join('');
   }
 
   function changeVote(restId, delta) {
-    if (!currentUser) { showToast('Please sign in to vote'); return; }
     const cur = myVotes[restId] || 0;
     if (delta < 0 && cur <= 0) return;
     if (delta > 0 && votesRemaining() <= 0) return;
@@ -1704,7 +1935,50 @@
     renderTable();
   }
 
+  function playVoteSound(delta) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      if (delta > 0) {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(480, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(860, ctx.currentTime + 0.07);
+        gain.gain.setValueAtTime(0.16, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.13);
+      } else {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(360, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.07);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
+      }
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+      osc.onended = () => ctx.close();
+    } catch(e) {}
+  }
+
+  function spawnBurst(el, delta) {
+    const r = el.getBoundingClientRect();
+    const dot = document.createElement('div');
+    dot.className = 'vote-burst';
+    dot.style.left = (r.left + r.width / 2 - 14) + 'px';
+    dot.style.top  = (r.top  + r.height / 2 - 14) + 'px';
+    dot.style.background = delta > 0 ? 'rgba(192,57,43,0.55)' : 'rgba(120,120,120,0.45)';
+    document.body.appendChild(dot);
+    dot.addEventListener('animationend', () => dot.remove());
+  }
+
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.vbtn');
+    if (!btn || btn.disabled) return;
+    const delta = btn.textContent.trim() === '+' ? 1 : -1;
+    playVoteSound(delta);
+    spawnBurst(btn, delta);
+  }, true);
+
   async function commitVotes() {
+    if (!currentUser) { showToast('Please sign in to save your votes'); return; }
     const btn = document.getElementById('submit-btn');
     btn.disabled = true; btn.textContent = 'Saving…';
     try {
@@ -1725,7 +1999,14 @@
           if (!r.ok) throw new Error('delete failed');
         }
       }
+      for (const rid of ids) {
+        const nv = myVotes[rid] || 0, ov = savedVotes[rid] || 0, delta = nv - ov;
+        if (delta === 0) continue;
+        const rest = restaurants.find(r => r.id === rid);
+        if (rest) rest.total_votes = (rest.total_votes || 0) + delta;
+      }
       savedVotes = { ...myVotes };
+      renderTable();
       showToast('Votes saved!');
       await loadRestaurants();
     } catch { showToast('Error saving votes. Please try again.'); }
