@@ -32,9 +32,6 @@
   :root {
     --red: #C0392B;
     --red-light: #fdf0ef;
-    --gold: #B8860B;
-    --silver: #7a7a7a;
-    --bronze: #8B4513;
     --bg: #faf9f7;
     --surface: #ffffff;
     --border: #e8e4de;
@@ -45,446 +42,104 @@
     --info: #1a4f8a;
   }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    min-height: 100vh;
-  }
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
 
-  header {
-    background: var(--red);
-    color: white;
-    padding: 0 24px;
-  }
+  header { background: linear-gradient(135deg, #C0392B 0%, #D45010 60%, #E06820 100%); color: white; padding: 0 24px; }
+  .header-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-height: 56px; }
+  header h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(14px, 3.2vw, 20px); font-weight: 500; white-space: nowrap; letter-spacing: -0.01em; line-height: 1; }
 
-  .header-inner {
-    max-width: 860px;
-    margin: 0 auto;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    min-height: 56px;
-  }
+  .container { max-width: 860px; margin: 0 auto; padding: 20px 16px 90px; }
 
-  header h1 {
-    font-family: 'DM Sans', sans-serif;
-    font-size: clamp(14px, 3.2vw, 20px);
-    font-weight: 500;
-    white-space: nowrap;
-    letter-spacing: -0.01em;
-    line-height: 1;
-  }
-
-
-  .container {
-    max-width: 860px;
-    margin: 0 auto;
-    padding: 20px 16px 90px;
-  }
-
-  .votes-bubble {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--info);
-    color: white;
-    padding: 10px 10px 10px 20px;
-    border-radius: 99px;
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    box-shadow: 0 4px 16px rgba(26,79,138,0.35);
-    z-index: 90;
-    white-space: nowrap;
-    transition: opacity 0.3s;
-  }
-
-  .votes-bubble .pips {
-    display: flex;
-    gap: 3px;
-  }
-
-  .pip {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: rgba(255,255,255,0.35);
-    transition: background 0.2s;
-  }
-
+  .votes-bubble { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: var(--info); color: white; padding: 10px 10px 10px 20px; border-radius: 99px; font-size: 14px; font-weight: 500; display: flex; align-items: center; gap: 12px; box-shadow: 0 4px 16px rgba(26,79,138,0.35); z-index: 90; white-space: nowrap; transition: opacity 0.3s; }
+  .votes-bubble .pips { display: flex; gap: 3px; }
+  .pip { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.35); transition: background 0.2s; }
   .pip.used { background: white; }
-
-  .submit-btn {
-    background: white;
-    color: var(--info);
-    border: none;
-    padding: 6px 16px;
-    border-radius: 99px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: background 0.15s, opacity 0.15s;
-    touch-action: manipulation;
-  }
-
+  @keyframes pip-pop { 0% { transform: scale(1); } 45% { transform: scale(1.75); } 72% { transform: scale(0.82); } 100% { transform: scale(1); } }
+  .pip.pip-pop { animation: pip-pop 0.35s cubic-bezier(0.36, 0.07, 0.19, 0.97) both; }
+  .submit-btn { background: white; color: var(--info); border: none; padding: 6px 16px; border-radius: 99px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 0.15s, opacity 0.15s; touch-action: manipulation; }
   .submit-btn:hover:not(:disabled) { background: #e8f0fe; }
   .submit-btn:disabled { opacity: 0.45; cursor: not-allowed; }
 
-  .signin-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 200;
-    padding: 20px;
-  }
-
+  .signin-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 200; padding: 20px; }
   .signin-overlay.hidden { display: none; }
-
-  .signin-modal {
-    background: white;
-    border-radius: 16px;
-    padding: 32px 28px;
-    max-width: 360px;
-    width: 100%;
-    text-align: center;
-    box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-    position: relative;
-  }
-
-  .modal-close {
-    position: absolute;
-    top: 12px;
-    right: 14px;
-    background: none;
-    border: none;
-    font-size: 20px;
-    color: var(--hint);
-    cursor: pointer;
-    line-height: 1;
-    padding: 4px;
-  }
-
+  .signin-modal { background: white; border-radius: 16px; padding: 32px 28px; max-width: 360px; width: 100%; text-align: center; box-shadow: 0 8px 40px rgba(0,0,0,0.18); position: relative; }
+  .modal-close { position: absolute; top: 12px; right: 14px; background: none; border: none; font-size: 20px; color: var(--hint); cursor: pointer; line-height: 1; padding: 4px; }
   .modal-close:hover { color: var(--text); }
+  .signin-modal h3 { font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .signin-modal p { font-size: 14px; color: var(--muted); margin-bottom: 24px; line-height: 1.5; }
+  .signin-modal .google-btn { width: 100%; justify-content: center; padding: 10px 20px; border: 1px solid var(--border); border-radius: 8px; margin-bottom: 12px; }
 
-  .signin-modal h3 {
-    font-family: 'DM Sans', sans-serif;
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 8px;
-    color: var(--text);
-  }
+  .card-list { display: flex; flex-direction: column; gap: 8px; }
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; transition: box-shadow 0.15s, border-color 0.15s; position: relative; overflow: hidden; }
+  .card:hover { box-shadow: 0 2px 10px rgba(0,0,0,0.07); border-color: #d0cbc5; }
+  .card-top { display: flex; align-items: center; gap: 12px; }
+  .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 50%; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+  .rank-badge.gold   { background: #FFF3CD; color: #92621A; border: 1.5px solid #F0C040; }
+  .rank-badge.silver { background: #F0F0F0; color: #5A5A5A; border: 1.5px solid #B8B8B8; }
+  .rank-badge.bronze { background: #FDEBD0; color: #7D4A1E; border: 1.5px solid #D4813A; }
+  .rank-badge.plain  { font-size: 11px; font-weight: 500; color: var(--hint); background: none; border: none; }
+  .card-info { flex: 1; min-width: 0; }
+  .card-info .name { font-size: 14px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .card-bottom { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+  .vote-count { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .card.voted { background: #fefaf9; border-color: #e0bab5; }
+  .card.rank-gold   { background: #FFFBEB; border-color: #F0C040; }
+  .card.rank-silver { background: #F8F8F8; border-color: #C8C8C8; }
+  .card.rank-bronze { background: #FFF8F2; border-color: #D09060; }
+  .card.rank-gold:hover   { box-shadow: 0 2px 12px rgba(240,192,64,0.28); }
+  .card.rank-silver:hover { box-shadow: 0 2px 10px rgba(180,180,180,0.22); }
+  .card.rank-bronze:hover { box-shadow: 0 2px 12px rgba(210,130,70,0.22); }
+  @keyframes sparkle-twinkle { 0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(20deg); } }
+  .sparkle { position: absolute; pointer-events: none; font-size: 11px; animation: sparkle-twinkle ease-in-out infinite; }
+  .dish-link { color: inherit; text-decoration: none; display: block; }
+  .dish-link:hover .name { color: var(--red); }
 
-  .signin-modal p {
-    font-size: 14px;
-    color: var(--muted);
-    margin-bottom: 24px;
-    line-height: 1.5;
-  }
-
-  .signin-modal .google-btn {
-    width: 100%;
-    justify-content: center;
-    padding: 10px 20px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    margin-bottom: 12px;
-  }
-
-
-  @media (max-width: 600px) {
-    .votes-bubble { font-size: 13px; padding: 8px 8px 8px 16px; bottom: 16px; }
-    .votes-bubble .pips { display: none; }
-    .submit-btn { padding: 6px 14px; font-size: 12px; }
-  }
-
-  .table-wrap {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    overflow: hidden;
-  }
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    table-layout: fixed;
-  }
-
-  thead th {
-    font-size: 10px;
-    font-weight: 500;
-    color: var(--hint);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    padding: 10px 14px;
-    border-bottom: 1px solid var(--border);
-    text-align: left;
-    background: #faf9f7;
-  }
-
-  thead th.r { text-align: right; }
-  thead th.c { text-align: center; }
-  thead th.count-cell { font-size: 10px; color: var(--hint); }
-
-  tbody tr {
-    border-bottom: 1px solid var(--border);
-    transition: background 0.1s;
-  }
-
-  tbody tr:last-child { border-bottom: none; }
-  tbody tr:hover { background: #faf9f7; }
-
-  td {
-    padding: 11px 14px;
-    vertical-align: middle;
-  }
-
-  .rank-cell {
-    font-size: 14px;
-    font-weight: 500;
-    color: var(--hint);
-    width: 32px;
-    text-align: center;
-  }
-
-  .rank-cell.gold { color: var(--gold); }
-  .rank-cell.silver { color: var(--silver); }
-  .rank-cell.bronze { color: var(--bronze); }
-
-  .dish-cell {
-    overflow: hidden;
-  }
-
-  .dish-cell .name {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--text);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .count-cell {
-    font-size: 12px;
-    color: var(--muted);
-    text-align: right;
-    white-space: nowrap;
-    width: 70px;
-  }
-
-  .vote-cell {
-    text-align: right;
-    width: 72px;
-  }
-
-  .vctrl {
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-  }
-
-  .vbtn {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    border: 1px solid var(--border);
-    background: var(--bg);
-    color: var(--text);
-    font-size: 14px;
-    line-height: 1;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.15s, background 0.15s;
-    font-family: 'DM Sans', sans-serif;
-    touch-action: manipulation;
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .vbtn:hover:not(:disabled) {
-    border-color: var(--red);
-    background: var(--red-light);
-    color: var(--red);
-  }
-
-  .vbtn:disabled {
-    opacity: 0.35;
-    cursor: not-allowed;
-  }
-
-  .vnum {
-    font-size: 12px;
-    font-weight: 500;
-    min-width: 16px;
-    text-align: center;
-    color: var(--text);
-  }
-
+  .vctrl { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .vbtn { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s, transform 0.08s; font-family: 'DM Sans', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+  .vbtn:hover:not(:disabled) { border-color: var(--red); background: var(--red-light); color: var(--red); }
+  .vbtn:disabled { opacity: 0.35; cursor: not-allowed; }
+  .vbtn:active:not(:disabled) { transform: scale(0.78); }
+  @keyframes vote-burst { 0% { transform: scale(0.6); opacity: 0.9; } 60% { transform: scale(2.4); opacity: 0.4; } 100% { transform: scale(3); opacity: 0; } }
+  .vote-burst { position: fixed; pointer-events: none; z-index: 9999; width: 28px; height: 28px; border-radius: 50%; animation: vote-burst 0.32s ease-out forwards; }
+  .vnum { font-size: 12px; font-weight: 500; min-width: 16px; text-align: center; color: var(--text); }
   .vnum.active { color: var(--red); }
 
-  .dish-link {
-    color: inherit;
-    text-decoration: none;
-  }
+  .search-wrap { margin-bottom: 12px; position: relative; }
+  .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--hint); pointer-events: none; }
+  .search-input { width: 100%; padding: 9px 12px 9px 36px; border: 1px solid var(--border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 14px; background: var(--surface); color: var(--text); outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+  .search-input::placeholder { color: var(--hint); }
+  .search-input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,0.1); }
 
-  .dish-link .name {
-    text-decoration: underline;
-    text-decoration-color: rgba(26,26,26,0.3);
-    text-underline-offset: 2px;
-  }
+  .footer-note { text-align: center; font-size: 12px; color: var(--hint); margin-top: 20px; }
+  .loading-msg { text-align: center; padding: 40px; color: var(--hint); font-size: 14px; }
 
-  .dish-link:hover .name {
-    color: var(--red);
-    text-decoration-color: var(--red);
-  }
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(80px); background: #1a1a1a; color: white; padding: 10px 20px; border-radius: 99px; font-size: 14px; transition: transform 0.3s ease; z-index: 100; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); }
 
-  .voted-row td { background: #fefaf9; }
-  .voted-badge {
-    font-size: 11px;
-    background: var(--red-light);
-    color: var(--red);
-    padding: 2px 7px;
-    border-radius: 99px;
-    border: 1px solid #f0c8c4;
-  }
+  .auth-bar { display: flex; align-items: center; flex-shrink: 0; }
+  .google-btn { background: white; color: #3c4043; border: none; padding: 8px 16px; border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; transition: background 0.15s, box-shadow 0.15s; touch-action: manipulation; }
+  .google-btn:hover { background: #f1f3f4; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
+  .signout-btn { background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 4px 12px; border-radius: 6px; font-family: 'DM Sans', sans-serif; font-size: 12px; cursor: pointer; transition: background 0.15s; touch-action: manipulation; }
+  .signout-btn:hover { background: rgba(255,255,255,0.3); }
 
   .site-intro { font-size: 13px; color: var(--muted); line-height: 1.6; margin-top: 20px; }
   .how-to { margin-bottom: 14px; }
   .how-to p { font-size: 13px; color: var(--muted); line-height: 1.8; }
   .how-to a { color: var(--red); text-decoration: none; font-weight: 500; }
   .how-to a:hover { text-decoration: underline; }
-  .search-wrap {
-    margin-bottom: 12px;
-    position: relative;
-  }
-
-  .search-wrap svg {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--hint);
-    pointer-events: none;
-  }
-
-  .search-input {
-    width: 100%;
-    padding: 9px 12px 9px 36px;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    background: var(--surface);
-    color: var(--text);
-    outline: none;
-    transition: border-color 0.15s, box-shadow 0.15s;
-  }
-
-  .search-input::placeholder { color: var(--hint); }
-
-  .search-input:focus {
-    border-color: var(--red);
-    box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
-  }
-
-  .footer-note {
-    text-align: center;
-    font-size: 12px;
-    color: var(--hint);
-    margin-top: 20px;
-  }
-
-  .loading-row td {
-    text-align: center;
-    padding: 40px;
-    color: var(--hint);
-    font-size: 14px;
-  }
-
-  .toast {
-    position: fixed;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%) translateY(80px);
-    background: #1a1a1a;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 99px;
-    font-size: 14px;
-    transition: transform 0.3s ease;
-    z-index: 100;
-    white-space: nowrap;
-  }
-
-  .toast.show { transform: translateX(-50%) translateY(0); }
-
-  .auth-bar { display: flex; align-items: center; flex-shrink: 0; }
-
-  .google-btn {
-    background: white;
-    color: #3c4043;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 8px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: background 0.15s, box-shadow 0.15s;
-    touch-action: manipulation;
-  }
-
-  .google-btn:hover { background: #f1f3f4; box-shadow: 0 1px 4px rgba(0,0,0,0.15); }
-
-  .auth-user {
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 13px;
-    color: rgba(255,255,255,0.9);
-  }
-
-  .signout-btn {
-    background: rgba(255,255,255,0.2);
-    color: white;
-    border: 1px solid rgba(255,255,255,0.3);
-    padding: 4px 12px;
-    border-radius: 6px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.15s;
-    touch-action: manipulation;
-  }
-
-  .signout-btn:hover { background: rgba(255,255,255,0.3); }
 
   @media (max-width: 600px) {
-    .votes-banner .pips { display: none; }
-
+    .votes-bubble { font-size: 13px; padding: 8px 8px 8px 16px; bottom: 16px; }
+    .votes-bubble .pips { display: none; }
+    .submit-btn { padding: 6px 14px; font-size: 12px; }
     header { padding: 0 16px; }
     .header-inner { min-height: 50px; gap: 10px; }
     header h1 { font-size: clamp(12px, 3.5vw, 16px); }
     .google-btn span { display: none; }
-    .tip-banner { padding: 10px 16px; }
-
-    td { padding: 10px 6px; }
-    thead th { padding: 10px 6px; }
-
+    .card { padding: 10px 12px; }
+    .card-info .name { font-size: 13px; }
     .vbtn { width: 34px; height: 34px; font-size: 17px; }
     .vnum { font-size: 13px; min-width: 18px; }
-    .vote-cell { width: auto; }
   }
 </style>
 </head>
@@ -515,19 +170,8 @@
     <input class="search-input" id="search-input" type="search" placeholder="Search dishes…" oninput="onSearch(this.value)">
   </div>
 
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Dish</th>
-          <th class="r count-cell">Total Votes</th>
-          <th class="r">Your vote</th>
-        </tr>
-      </thead>
-      <tbody id="table-body">
-        <tr class="loading-row"><td colspan="3">Loading dishes…</td></tr>
-      </tbody>
-    </table>
+  <div id="table-body" class="card-list">
+    <div class="loading-msg">Loading dishes…</div>
   </div>
 
   <p class="footer-note" id="footer-note"></p>
@@ -563,9 +207,9 @@
 
   let currentUser = null;
   let categories = [];
-  let myVotes = {};      // pending (unsaved) votes
-  let savedVotes = {};   // last known DB state
-  let authInitialized = false; // prevents double-fire race condition
+  let myVotes = {};
+  let savedVotes = {};
+  let authInitialized = false;
   let searchQuery = '';
 
   // ── auth ──
@@ -575,9 +219,6 @@
     renderAuthBar();
 
     if (currentUser) {
-      // Claim the slot synchronously before first await so a concurrent second
-      // auth event (Supabase fires both INITIAL_SESSION and SIGNED_IN) cannot
-      // race in and overwrite myVotes with a mid-commit DB snapshot.
       const pending = sessionStorage.getItem('pendingVotes');
       if (pending) sessionStorage.removeItem('pendingVotes');
 
@@ -585,8 +226,6 @@
         authInitialized = true;
         savedVotes = await fetchSavedVotes();
         const hasSaved = Object.keys(savedVotes).length > 0;
-        // Existing user: show their DB votes, discard any pre-login votes.
-        // New user (nothing in DB): restore pre-login votes so they can review and submit.
         myVotes = (pending && !hasSaved) ? JSON.parse(pending) : { ...savedVotes };
         if (pending && hasSaved) {
           showToast('Your saved votes have been restored. Pre-login votes discarded — edit and resubmit anytime.', 2000);
@@ -628,16 +267,12 @@
     savedVotes = {};
     authInitialized = false;
     currentUser = null;
-    // Clear session from localStorage synchronously so the UI never hangs,
-    // then fire-and-forget the Supabase client call to clean up its internal state.
     try { localStorage.removeItem('sb-xlbgijjtxbflhkjftene-auth-token'); } catch {}
     sb.auth.signOut({ scope: 'local' }).catch(() => {});
     renderAuthBar();
     renderTable();
   }
 
-  // Read the stored JWT directly from localStorage — synchronous, never blocks
-  // on a token refresh the way sb.from(...) queries can.
   function getAuthToken() {
     try {
       const stored = localStorage.getItem('sb-xlbgijjtxbflhkjftene-auth-token');
@@ -672,8 +307,6 @@
   // ── data ──
   async function loadCategories() {
     try {
-      // Use plain fetch with the anon key so this query is never blocked by
-      // the auth client refreshing an expired JWT on the same Supabase instance.
       const res = await fetch(
         `${SUPABASE_URL}/rest/v1/dishes_with_votes?select=*`,
         { headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` } }
@@ -681,7 +314,7 @@
       if (!res.ok) throw new Error(res.status);
       categories = await res.json();
     } catch {
-      document.getElementById('table-body').innerHTML = '<tr class="loading-row"><td colspan="3">Could not load data.</td></tr>';
+      document.getElementById('table-body').innerHTML = '<div class="loading-msg">Could not load data.</div>';
       return;
     }
     injectIndexSchema(categories);
@@ -724,9 +357,9 @@
     btn.disabled = used === 0;
     btn.textContent = used > 0 ? `Submit (${used})` : 'Submit';
 
-    const tbody = document.getElementById('table-body');
+    const list = document.getElementById('table-body');
     if (!categories.length) {
-      tbody.innerHTML = '<tr class="loading-row"><td colspan="3">No dishes found.</td></tr>';
+      list.innerHTML = '<div class="loading-msg">No dishes found.</div>';
       return;
     }
 
@@ -735,45 +368,61 @@
       : categories;
 
     if (!filtered.length) {
-      tbody.innerHTML = `<tr class="loading-row"><td colspan="3">No dishes match "${document.getElementById('search-input').value}".</td></tr>`;
+      list.innerHTML = `<div class="loading-msg">No dishes match "${document.getElementById('search-input').value}".</div>`;
       document.getElementById('footer-note').textContent = '';
       return;
     }
 
-    tbody.innerHTML = filtered.map((cat) => {
-      const myV = myVotes[cat.id] || 0;
-      const isVoted = myV > 0;
-      const minusDisabled = myV <= 0;
-      const plusDisabled = remaining <= 0;
+    const rankOf = searchQuery ? {} : Object.fromEntries(categories.map((c, i) => [c.id, i + 1]));
 
-      return `<tr class="${isVoted ? 'voted-row' : ''}" id="row-${cat.id}">
-        <td class="dish-cell">
-          <a class="dish-link" href="/dishes/${cat.slug}">
-            <div class="name">${cat.name}</div>
-          </a>
-        </td>
-        <td class="count-cell">${(cat.total_votes || 0).toLocaleString()}</td>
-        <td class="vote-cell">
-          <div class="vctrl">
-            <button class="vbtn" onclick="changeVote(${cat.id}, -1)" ${minusDisabled ? 'disabled' : ''}>−</button>
-            <span class="vnum ${myV > 0 ? 'active' : ''}" id="vnum-${cat.id}">${myV}</span>
-            <button class="vbtn" onclick="changeVote(${cat.id}, 1)" ${plusDisabled ? 'disabled' : ''}>+</button>
+    list.innerHTML = filtered.map((cat) => {
+      const myV = myVotes[cat.id] || 0;
+      const rank = rankOf[cat.id];
+      const medalClass = rank === 1 ? 'gold' : rank === 2 ? 'silver' : rank === 3 ? 'bronze' : 'plain';
+      const medalLabel = rank === 1 ? '🥇' : rank === 2 ? '🥈' : rank === 3 ? '🥉' : (rank || '');
+      const badge = `<span class="rank-badge ${medalClass}">${medalLabel}</span>`;
+      const cardClass = ['card', myV > 0 ? 'voted' : '',
+        rank === 1 ? 'rank-gold' : rank === 2 ? 'rank-silver' : rank === 3 ? 'rank-bronze' : ''
+      ].filter(Boolean).join(' ');
+      const votes = cat.total_votes || 0;
+      const sparkleColor = rank === 1 ? '#D4A800' : rank === 2 ? '#999' : '#C07030';
+      const sparkles = rank >= 1 && rank <= 3 ? [
+        { t: 7,  r: 55, d: 0,    dur: 2.2  },
+        { t: 18, r: 32, d: 0.75, dur: 1.85 },
+        { t: 6,  r: 18, d: 1.4,  dur: 2.6  },
+        { t: 20, r: 62, d: 0.4,  dur: 1.6  },
+      ].map(s => `<span class="sparkle" style="top:${s.t}px;right:${s.r}px;color:${sparkleColor};animation-duration:${s.dur}s;animation-delay:${s.d}s;">✦</span>`).join('') : '';
+
+      return `<div class="${cardClass}" id="row-${cat.id}">${sparkles}
+        <div class="card-top">
+          ${badge}
+          <div class="card-info">
+            <a class="dish-link" href="/dishes/${cat.slug}"><div class="name">${cat.name}</div></a>
           </div>
-        </td>
-      </tr>`;
+        </div>
+        <div class="card-bottom">
+          <span class="vote-count" id="count-${cat.id}">${votes.toLocaleString()} vote${votes !== 1 ? 's' : ''}</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(${cat.id}, -1)" ${myV <= 0 ? 'disabled' : ''}>−</button>
+            <span class="vnum ${myV > 0 ? 'active' : ''}" id="vnum-${cat.id}">${myV}</span>
+            <button class="vbtn" onclick="changeVote(${cat.id}, 1)" ${remaining <= 0 ? 'disabled' : ''}>+</button>
+          </div>
+        </div>
+      </div>`;
     }).join('');
 
-    const note = searchQuery
+    document.getElementById('footer-note').textContent = searchQuery
       ? `${filtered.length} of ${categories.length} dishes`
       : `${categories.length} dishes · sorted by community votes`;
-    document.getElementById('footer-note').textContent = note;
   }
 
   function renderPips(used) {
     const container = document.getElementById('pips-container');
-    container.innerHTML = Array.from({ length: TOTAL_VOTES }, (_, i) =>
-      `<div class="pip ${i < used ? 'used' : ''}"></div>`
-    ).join('');
+    const prevUsed = container.querySelectorAll('.pip.used').length;
+    container.innerHTML = Array.from({ length: TOTAL_VOTES }, (_, i) => {
+      const isUsed = i < used, isNew = isUsed && i >= prevUsed;
+      return `<div class="pip${isUsed ? ' used' : ''}${isNew ? ' pip-pop' : ''}"></div>`;
+    }).join('');
   }
 
   function changeVote(catId, delta) {
@@ -818,7 +467,14 @@
           if (!del.ok) throw new Error('votes delete failed');
         }
       }
+      for (const catId of allIds) {
+        const nv = myVotes[catId] || 0, ov = savedVotes[catId] || 0, delta = nv - ov;
+        if (delta === 0) continue;
+        const cat = categories.find(c => c.id === catId);
+        if (cat) cat.total_votes = (cat.total_votes || 0) + delta;
+      }
       savedVotes = { ...myVotes };
+      renderTable();
       showToast('Votes saved!');
       await loadCategories();
     } catch (e) {
@@ -826,6 +482,48 @@
     }
     renderTable();
   }
+
+  function playVoteSound(delta) {
+    try {
+      const ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      if (delta > 0) {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(480, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(860, ctx.currentTime + 0.07);
+        gain.gain.setValueAtTime(0.16, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.13);
+      } else {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(360, ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.07);
+        gain.gain.setValueAtTime(0.12, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
+      }
+      osc.start(ctx.currentTime); osc.stop(ctx.currentTime + 0.15);
+      osc.onended = () => ctx.close();
+    } catch(e) {}
+  }
+
+  function spawnBurst(el, delta) {
+    const r = el.getBoundingClientRect();
+    const dot = document.createElement('div');
+    dot.className = 'vote-burst';
+    dot.style.left = (r.left + r.width / 2 - 14) + 'px';
+    dot.style.top  = (r.top  + r.height / 2 - 14) + 'px';
+    dot.style.background = delta > 0 ? 'rgba(192,57,43,0.55)' : 'rgba(120,120,120,0.45)';
+    document.body.appendChild(dot);
+    dot.addEventListener('animationend', () => dot.remove());
+  }
+
+  document.addEventListener('click', function(e) {
+    const btn = e.target.closest('.vbtn');
+    if (!btn || btn.disabled) return;
+    const delta = btn.textContent.trim() === '+' ? 1 : -1;
+    playVoteSound(delta);
+    spawnBurst(btn, delta);
+  }, true);
 
   function showToast(msg, duration = 2800) {
     const t = document.getElementById('toast');
