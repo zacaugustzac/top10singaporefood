@@ -768,8 +768,8 @@
   .card-info .name { font-size: 14px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .card-info .addr { font-size: 12px; color: var(--hint); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .card-bottom { margin-top: 10px; display: flex; align-items: flex-end; justify-content: flex-end; gap: 16px; }
-  .vote-col { display: flex; flex-direction: row; align-items: baseline; gap: 5px; }
-  .vote-col-right { flex-direction: column; align-items: flex-end; gap: 2px; }
+  .vote-col { display: flex; flex-direction: row; align-items: center; gap: 5px; }
+  .vote-col-right { gap: 6px; }
   .vote-count { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; line-height: 1; }
   .vote-sublabel { font-size: 10px; color: var(--hint); letter-spacing: 0.03em; line-height: 1; }
   .card.voted { background: #fefaf9; border-color: #e0bab5; }
@@ -1041,12 +1041,12 @@
             '<span class="vote-count" id="count-' + r.id + '">' + votes.toLocaleString() + '</span>' +
           '</div>' +
           '<div class="vote-col vote-col-right">' +
+            '<span class="vote-sublabel">Your Votes</span>' +
             '<div class="vctrl">' +
               '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (myV <= 0 ? ' disabled' : '') + '>−</button>' +
               '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
               '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (remaining <= 0 ? ' disabled' : '') + '>+</button>' +
             '</div>' +
-            '<span class="vote-sublabel">your vote</span>' +
           '</div>' +
         '</div>' +
       '</div>';
