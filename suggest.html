@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suggest a Missing Restaurant or Dish — Top 10 Singapore Food</title>
+<meta name="description" content="Help grow the community list — submit a missing restaurant or dish to Top 10 Singapore Food.">
+<link rel="canonical" href="https://top10singaporefood.com/suggest">
+<meta property="og:title" content="Suggest a Missing Restaurant or Dish">
+<meta property="og:description" content="Help grow the community list — submit a missing restaurant or dish.">
+<meta property="og:url" content="https://top10singaporefood.com/suggest">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Top 10 Singapore Food">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
+<script src="/supabase.min.js"></script>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --red: #C0392B;
+    --red-light: #fdf0ef;
+    --bg: #faf9f7;
+    --surface: #ffffff;
+    --border: #e8e4de;
+    --text: #1a1a1a;
+    --muted: #6b6660;
+    --hint: #a09a94;
+    --info-bg: #eef4fb;
+    --info: #1a4f8a;
+  }
+
+  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  header { background: linear-gradient(135deg, #C0392B 0%, #D45010 60%, #E06820 100%); color: white; padding: 0 24px; }
+  .header-inner { max-width: 860px; margin: 0 auto; display: flex; align-items: center; gap: 16px; min-height: 56px; }
+  .back-link { color: rgba(255,255,255,0.75); text-decoration: none; font-size: 18px; line-height: 1; flex-shrink: 0; transition: color 0.15s; }
+  .back-link:hover { color: white; }
+  header h1 { font-family: 'DM Sans', sans-serif; font-size: clamp(14px, 3.2vw, 20px); font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.01em; line-height: 1; }
+
+  .container { max-width: 580px; margin: 0 auto; padding: 32px 16px 80px; }
+
+  .section-label { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--hint); margin-bottom: 16px; }
+
+  .type-row { display: flex; gap: 10px; margin-bottom: 24px; }
+  .type-btn {
+    flex: 1;
+    padding: 12px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s, color 0.15s;
+    text-align: center;
+  }
+  .type-btn:hover { border-color: var(--red); color: var(--text); }
+  .type-btn.active { border-color: var(--red); background: var(--red-light); color: var(--red); }
+
+  .form-card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 24px; }
+
+  .field { margin-bottom: 18px; }
+  .field:last-child { margin-bottom: 0; }
+  label { display: block; font-size: 13px; font-weight: 500; color: var(--text); margin-bottom: 6px; }
+  label .opt { font-weight: 400; color: var(--hint); }
+
+  input[type=text], input[type=email], select, textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+    appearance: none;
+  }
+  input[type=text]:focus, input[type=email]:focus, select:focus, textarea:focus {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(192,57,43,0.1);
+    background: var(--surface);
+  }
+  input::placeholder, textarea::placeholder { color: var(--hint); }
+  select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23a09a94' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; cursor: pointer; }
+  textarea { resize: vertical; min-height: 80px; line-height: 1.5; }
+
+  .submit-btn {
+    width: 100%;
+    margin-top: 24px;
+    padding: 13px;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s, opacity 0.15s;
+    touch-action: manipulation;
+  }
+  .submit-btn:hover:not(:disabled) { background: #a93226; }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .success-state { display: none; text-align: center; padding: 48px 24px; }
+  .success-icon { font-size: 48px; margin-bottom: 16px; }
+  .success-state h2 { font-size: 20px; font-weight: 600; color: var(--text); margin-bottom: 8px; }
+  .success-state p { font-size: 14px; color: var(--muted); line-height: 1.6; }
+  .success-state a { color: var(--red); text-decoration: none; font-weight: 500; }
+  .success-state a:hover { text-decoration: underline; }
+
+  .error-msg { font-size: 13px; color: #c0392b; margin-top: 6px; display: none; }
+
+  .hint-text { font-size: 12px; color: var(--hint); margin-top: 5px; line-height: 1.5; }
+
+  @media (max-width: 600px) {
+    header { padding: 0 16px; }
+    .header-inner { min-height: 50px; }
+    header h1 { font-size: clamp(12px, 3.5vw, 16px); }
+    .container { padding: 20px 12px 60px; }
+    .form-card { padding: 18px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <a class="back-link" href="/">←</a>
+    <h1>Suggest a Missing Restaurant or Dish</h1>
+  </div>
+</header>
+
+<div class="container">
+
+  <p class="section-label">What are you adding?</p>
+
+  <div class="type-row">
+    <button class="type-btn active" id="btn-restaurant" onclick="setType('restaurant')">🍜 Missing Restaurant</button>
+    <button class="type-btn" id="btn-dish" onclick="setType('dish')">🍽️ Missing Dish</button>
+  </div>
+
+  <div class="form-card" id="form-wrap">
+
+    <!-- Restaurant fields -->
+    <div id="restaurant-fields">
+      <div class="field">
+        <label for="dish-select">Dish category</label>
+        <select id="dish-select">
+          <option value="">Loading dishes…</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="restaurant-name">Restaurant name</label>
+        <input type="text" id="restaurant-name" placeholder="e.g. Changi Village Fried Hokkien Mee" autocomplete="off">
+      </div>
+      <div class="field">
+        <label for="restaurant-address">Address <span class="opt">(optional)</span></label>
+        <input type="text" id="restaurant-address" placeholder="e.g. Block 2, Changi Village Rd, #01-01" autocomplete="off">
+        <p class="hint-text">Hawker centre name, block/unit number, street address, or Google Maps URL.</p>
+      </div>
+    </div>
+
+    <!-- Dish fields -->
+    <div id="dish-fields" style="display:none">
+      <div class="field">
+        <label for="new-dish-name">Dish name</label>
+        <input type="text" id="new-dish-name" placeholder="e.g. Cheng Tng" autocomplete="off">
+      </div>
+    </div>
+
+    <!-- Shared fields -->
+    <div class="field">
+      <label for="notes">Notes <span class="opt">(optional)</span></label>
+      <textarea id="notes" placeholder="Any additional info — e.g. opening hours, why it deserves a spot…"></textarea>
+    </div>
+    <div class="field">
+      <label for="submitter-email">Your email <span class="opt">(optional)</span></label>
+      <input type="email" id="submitter-email" placeholder="so we can follow up if needed" autocomplete="email">
+    </div>
+
+    <p class="error-msg" id="error-msg"></p>
+    <button class="submit-btn" id="submit-btn" onclick="submitSuggestion()">Submit suggestion</button>
+  </div>
+
+  <div class="success-state" id="success-state">
+    <div class="success-icon">🙏</div>
+    <h2>Thanks for the suggestion!</h2>
+    <p>We review all submissions and add approved ones within a few days.<br>
+    Questions? DM us on Instagram <a href="https://www.instagram.com/top10singaporefood" target="_blank" rel="noopener">@top10singaporefood</a>.</p>
+    <br>
+    <p><a href="/">← Back to all dishes</a></p>
+  </div>
+
+</div>
+
+<script>
+  const SUPABASE_URL = 'https://xlbgijjtxbflhkjftene.supabase.co';
+  const SUPABASE_KEY = 'sb_publishable_1tTdNWd1N0n9w3ElrCynNw_ia1JWbc6';
+
+  let currentType = 'restaurant';
+  let dishes = [];
+
+  function setType(type) {
+    currentType = type;
+    document.getElementById('btn-restaurant').classList.toggle('active', type === 'restaurant');
+    document.getElementById('btn-dish').classList.toggle('active', type === 'dish');
+    document.getElementById('restaurant-fields').style.display = type === 'restaurant' ? '' : 'none';
+    document.getElementById('dish-fields').style.display = type === 'dish' ? '' : 'none';
+    clearError();
+  }
+
+  async function loadDishes() {
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/dishes?select=id,name&order=name`, {
+        headers: { apikey: SUPABASE_KEY, Authorization: `Bearer ${SUPABASE_KEY}` }
+      });
+      dishes = res.ok ? await res.json() : [];
+    } catch { dishes = []; }
+    const sel = document.getElementById('dish-select');
+    sel.innerHTML = '<option value="">Select a dish…</option>' +
+      dishes.map(d => `<option value="${d.id}">${d.name}</option>`).join('');
+  }
+
+  function showError(msg) {
+    const el = document.getElementById('error-msg');
+    el.textContent = msg;
+    el.style.display = 'block';
+  }
+
+  function clearError() {
+    const el = document.getElementById('error-msg');
+    el.style.display = 'none';
+    el.textContent = '';
+  }
+
+  async function submitSuggestion() {
+    clearError();
+
+    const notes = document.getElementById('notes').value.trim();
+    const email = document.getElementById('submitter-email').value.trim();
+    let payload;
+
+    if (currentType === 'restaurant') {
+      const dishId = document.getElementById('dish-select').value;
+      const name = document.getElementById('restaurant-name').value.trim();
+      const address = document.getElementById('restaurant-address').value.trim();
+      if (!dishId) { showError('Please select a dish category.'); return; }
+      if (!name) { showError('Please enter the restaurant name.'); return; }
+      payload = { type: 'restaurant', dish_category_id: dishId ? Number(dishId) : null, restaurant_name: name, address: address || null, notes: notes || null, submitter_email: email || null };
+    } else {
+      const dishName = document.getElementById('new-dish-name').value.trim();
+      if (!dishName) { showError('Please enter the dish name.'); return; }
+      payload = { type: 'dish', dish_name: dishName, notes: notes || null, submitter_email: email || null };
+    }
+
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Submitting…';
+
+    try {
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/suggestions`, {
+        method: 'POST',
+        headers: {
+          apikey: SUPABASE_KEY,
+          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+          Prefer: 'return=minimal'
+        },
+        body: JSON.stringify(payload)
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || res.status);
+      }
+      document.getElementById('form-wrap').style.display = 'none';
+      document.getElementById('success-state').style.display = 'block';
+      document.querySelector('.type-row').style.display = 'none';
+      document.querySelector('.section-label').style.display = 'none';
+    } catch (e) {
+      showError('Could not submit. Please try again or DM us on Instagram @top10singaporefood.');
+      btn.disabled = false;
+      btn.textContent = 'Submit suggestion';
+    }
+  }
+
+  loadDishes();
+</script>
+</body>
+</html>
