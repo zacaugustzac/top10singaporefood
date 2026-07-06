@@ -70,19 +70,7 @@ def render_cards(rests):
         card_class  = f'card rank-{medal_class}' if rank <= 3 else 'card'
         addr        = f'<div class="addr">{esc(r["address"])}</div>' if r.get('address') else ''
         votes       = r.get('total_votes') or 0
-        vote_label  = f'{votes:,} vote{"s" if votes != 1 else ""}'
-        if rank <= 3:
-            sc = '#D4A800' if rank == 1 else '#999' if rank == 2 else '#C07030'
-            sparkles = (
-                f'<span class="sparkle" style="top:7px;right:55px;color:{sc};animation-duration:2.2s;animation-delay:0s;">✦</span>'
-                f'<span class="sparkle" style="top:18px;right:32px;color:{sc};animation-duration:1.85s;animation-delay:0.75s;">✦</span>'
-                f'<span class="sparkle" style="top:6px;right:18px;color:{sc};animation-duration:2.6s;animation-delay:1.4s;">✦</span>'
-                f'<span class="sparkle" style="top:20px;right:62px;color:{sc};animation-duration:1.6s;animation-delay:0.4s;">✦</span>'
-            )
-        else:
-            sparkles = ''
         cards.append(f'''    <div class="{card_class}" id="row-{r['id']}">
-      {sparkles}
       <div class="card-top">
         <span class="rank-badge {medal_class}">{medal}</span>
         <div class="card-info">
@@ -91,11 +79,17 @@ def render_cards(rests):
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-{r['id']}">{vote_label}</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote({r['id']},-1)" disabled>−</button>
-          <span class="vnum" id="vnum-{r['id']}">0</span>
-          <button class="vbtn" onclick="changeVote({r['id']},1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-{r['id']}">{votes:,}</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote({r['id']},-1)" disabled>−</button>
+            <span class="vnum" id="vnum-{r['id']}">0</span>
+            <button class="vbtn" onclick="changeVote({r['id']},1)">+</button>
+          </div>
         </div>
       </div>
     </div>''')
@@ -211,7 +205,9 @@ def build_page(dish, rests):
   .card-info .name {{ font-size: 14px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
   .card-info .addr {{ font-size: 12px; color: var(--hint); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }}
   .card-bottom {{ margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }}
-  .vote-count {{ font-size: 12px; color: var(--muted); white-space: nowrap; }}
+  .vote-col {{ display: flex; flex-direction: row; align-items: center; gap: 5px; }}
+  .vote-count {{ font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; line-height: 1; min-width: 18px; }}
+  .vote-sublabel {{ font-size: 11px; color: var(--hint); white-space: nowrap; line-height: 1; }}
   .card.voted {{ background: #fefaf9; border-color: #e0bab5; }}
   .card.rank-gold   {{ background: #FFFBEB; border-color: #F0C040; }}
   .card.rank-silver {{ background: #F8F8F8; border-color: #C8C8C8; }}
@@ -219,8 +215,6 @@ def build_page(dish, rests):
   .card.rank-gold:hover   {{ box-shadow: 0 2px 12px rgba(240,192,64,0.28); }}
   .card.rank-silver:hover {{ box-shadow: 0 2px 10px rgba(180,180,180,0.22); }}
   .card.rank-bronze:hover {{ box-shadow: 0 2px 12px rgba(210,130,70,0.22); }}
-  @keyframes sparkle-twinkle {{ 0%, 100% {{ opacity: 0; transform: scale(0.4) rotate(0deg); }} 50% {{ opacity: 1; transform: scale(1) rotate(20deg); }} }}
-  .sparkle {{ position: absolute; pointer-events: none; font-size: 11px; animation: sparkle-twinkle ease-in-out infinite; }}
   .vctrl {{ display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }}
   .vbtn {{ width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s, transform 0.08s; font-family: \'DM Sans\', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }}
   .vbtn:hover:not(:disabled) {{ border-color: var(--red); background: var(--red-light); color: var(--red); }}
@@ -465,15 +459,7 @@ def build_page(dish, rests):
         rank === 1 ? 'rank-gold' : rank === 2 ? 'rank-silver' : rank === 3 ? 'rank-bronze' : ''
       ].filter(Boolean).join(' ');
       const votes = r.total_votes || 0;
-      const sparkleColor = rank === 1 ? '#D4A800' : rank === 2 ? '#999' : '#C07030';
-      const sparkles = rank >= 1 && rank <= 3 ? [
-        {{ t: 7,  r: 55, d: 0,    dur: 2.2  }},
-        {{ t: 18, r: 32, d: 0.75, dur: 1.85 }},
-        {{ t: 6,  r: 18, d: 1.4,  dur: 2.6  }},
-        {{ t: 20, r: 62, d: 0.4,  dur: 1.6  }},
-      ].map(s => '<span class="sparkle" style="top:' + s.t + 'px;right:' + s.r + 'px;color:' + sparkleColor + ';animation-duration:' + s.dur + 's;animation-delay:' + s.d + 's;">✦</span>').join('') : '';
       return '<div class="' + cardClass + '" id="row-' + r.id + '">' +
-        sparkles +
         '<div class="card-top">' +
           badge +
           '<div class="card-info">' +
@@ -482,11 +468,17 @@ def build_page(dish, rests):
           '</div>' +
         '</div>' +
         '<div class="card-bottom">' +
-          '<span class="vote-count" id="count-' + r.id + '">' + votes.toLocaleString() + ' vote' + (votes !== 1 ? 's' : '') + '</span>' +
-          '<div class="vctrl">' +
-            '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (myV <= 0 ? ' disabled' : '') + '>−</button>' +
-            '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
-            '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (remaining <= 0 ? ' disabled' : '') + '>+</button>' +
+          '<div class="vote-col">' +
+            '<span class="vote-sublabel">Total Votes</span>' +
+            '<span class="vote-count" id="count-' + r.id + '">' + votes.toLocaleString() + '</span>' +
+          '</div>' +
+          '<div class="vote-col vote-col-right">' +
+            '<span class="vote-sublabel">Your Votes</span>' +
+            '<div class="vctrl">' +
+              '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (myV <= 0 ? ' disabled' : '') + '>−</button>' +
+              '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
+              '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (remaining <= 0 ? ' disabled' : '') + '>+</button>' +
+            '</div>' +
           '</div>' +
         '</div>' +
       '</div>';

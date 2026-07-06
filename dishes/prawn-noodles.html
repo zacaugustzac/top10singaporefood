@@ -249,7 +249,9 @@
   .card-info .name { font-size: 14px; font-weight: 600; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .card-info .addr { font-size: 12px; color: var(--hint); margin-top: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .card-bottom { margin-top: 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-  .vote-count { font-size: 12px; color: var(--muted); white-space: nowrap; }
+  .vote-col { display: flex; flex-direction: row; align-items: center; gap: 5px; }
+  .vote-count { font-size: 13px; font-weight: 600; color: var(--text); white-space: nowrap; line-height: 1; min-width: 18px; }
+  .vote-sublabel { font-size: 11px; color: var(--hint); white-space: nowrap; line-height: 1; }
   .card.voted { background: #fefaf9; border-color: #e0bab5; }
   .card.rank-gold   { background: #FFFBEB; border-color: #F0C040; }
   .card.rank-silver { background: #F8F8F8; border-color: #C8C8C8; }
@@ -257,8 +259,6 @@
   .card.rank-gold:hover   { box-shadow: 0 2px 12px rgba(240,192,64,0.28); }
   .card.rank-silver:hover { box-shadow: 0 2px 10px rgba(180,180,180,0.22); }
   .card.rank-bronze:hover { box-shadow: 0 2px 12px rgba(210,130,70,0.22); }
-  @keyframes sparkle-twinkle { 0%, 100% { opacity: 0; transform: scale(0.4) rotate(0deg); } 50% { opacity: 1; transform: scale(1) rotate(20deg); } }
-  .sparkle { position: absolute; pointer-events: none; font-size: 11px; animation: sparkle-twinkle ease-in-out infinite; }
   .vctrl { display: inline-flex; align-items: center; gap: 4px; flex-shrink: 0; }
   .vbtn { width: 22px; height: 22px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s, background 0.15s, transform 0.08s; font-family: 'DM Sans', sans-serif; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
   .vbtn:hover:not(:disabled) { border-color: var(--red); background: var(--red-light); color: var(--red); }
@@ -346,7 +346,6 @@
 
   <div id="table-body" class="card-list">
     <div class="card rank-gold" id="row-90">
-      <span class="sparkle" style="top:7px;right:55px;color:#D4A800;animation-duration:2.2s;animation-delay:0s;">✦</span><span class="sparkle" style="top:18px;right:32px;color:#D4A800;animation-duration:1.85s;animation-delay:0.75s;">✦</span><span class="sparkle" style="top:6px;right:18px;color:#D4A800;animation-duration:2.6s;animation-delay:1.4s;">✦</span><span class="sparkle" style="top:20px;right:62px;color:#D4A800;animation-duration:1.6s;animation-delay:0.4s;">✦</span>
       <div class="card-top">
         <span class="rank-badge gold">🥇</span>
         <div class="card-info">
@@ -355,16 +354,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-90">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(90,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-90">0</span>
-          <button class="vbtn" onclick="changeVote(90,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-90">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(90,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-90">0</span>
+            <button class="vbtn" onclick="changeVote(90,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card rank-silver" id="row-81">
-      <span class="sparkle" style="top:7px;right:55px;color:#999;animation-duration:2.2s;animation-delay:0s;">✦</span><span class="sparkle" style="top:18px;right:32px;color:#999;animation-duration:1.85s;animation-delay:0.75s;">✦</span><span class="sparkle" style="top:6px;right:18px;color:#999;animation-duration:2.6s;animation-delay:1.4s;">✦</span><span class="sparkle" style="top:20px;right:62px;color:#999;animation-duration:1.6s;animation-delay:0.4s;">✦</span>
       <div class="card-top">
         <span class="rank-badge silver">🥈</span>
         <div class="card-info">
@@ -373,16 +377,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-81">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(81,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-81">0</span>
-          <button class="vbtn" onclick="changeVote(81,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-81">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(81,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-81">0</span>
+            <button class="vbtn" onclick="changeVote(81,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card rank-bronze" id="row-89">
-      <span class="sparkle" style="top:7px;right:55px;color:#C07030;animation-duration:2.2s;animation-delay:0s;">✦</span><span class="sparkle" style="top:18px;right:32px;color:#C07030;animation-duration:1.85s;animation-delay:0.75s;">✦</span><span class="sparkle" style="top:6px;right:18px;color:#C07030;animation-duration:2.6s;animation-delay:1.4s;">✦</span><span class="sparkle" style="top:20px;right:62px;color:#C07030;animation-duration:1.6s;animation-delay:0.4s;">✦</span>
       <div class="card-top">
         <span class="rank-badge bronze">🥉</span>
         <div class="card-info">
@@ -391,16 +400,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-89">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(89,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-89">0</span>
-          <button class="vbtn" onclick="changeVote(89,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-89">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(89,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-89">0</span>
+            <button class="vbtn" onclick="changeVote(89,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card" id="row-87">
-      
       <div class="card-top">
         <span class="rank-badge plain">4</span>
         <div class="card-info">
@@ -409,16 +423,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-87">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(87,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-87">0</span>
-          <button class="vbtn" onclick="changeVote(87,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-87">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(87,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-87">0</span>
+            <button class="vbtn" onclick="changeVote(87,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card" id="row-302">
-      
       <div class="card-top">
         <span class="rank-badge plain">5</span>
         <div class="card-info">
@@ -427,16 +446,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-302">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(302,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-302">0</span>
-          <button class="vbtn" onclick="changeVote(302,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-302">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(302,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-302">0</span>
+            <button class="vbtn" onclick="changeVote(302,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card" id="row-88">
-      
       <div class="card-top">
         <span class="rank-badge plain">6</span>
         <div class="card-info">
@@ -445,16 +469,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-88">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(88,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-88">0</span>
-          <button class="vbtn" onclick="changeVote(88,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-88">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(88,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-88">0</span>
+            <button class="vbtn" onclick="changeVote(88,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card" id="row-82">
-      
       <div class="card-top">
         <span class="rank-badge plain">7</span>
         <div class="card-info">
@@ -463,16 +492,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-82">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(82,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-82">0</span>
-          <button class="vbtn" onclick="changeVote(82,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-82">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(82,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-82">0</span>
+            <button class="vbtn" onclick="changeVote(82,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card" id="row-86">
-      
       <div class="card-top">
         <span class="rank-badge plain">8</span>
         <div class="card-info">
@@ -481,16 +515,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-86">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(86,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-86">0</span>
-          <button class="vbtn" onclick="changeVote(86,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-86">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(86,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-86">0</span>
+            <button class="vbtn" onclick="changeVote(86,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card" id="row-84">
-      
       <div class="card-top">
         <span class="rank-badge plain">9</span>
         <div class="card-info">
@@ -499,16 +538,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-84">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(84,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-84">0</span>
-          <button class="vbtn" onclick="changeVote(84,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-84">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(84,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-84">0</span>
+            <button class="vbtn" onclick="changeVote(84,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card" id="row-85">
-      
       <div class="card-top">
         <span class="rank-badge plain">10</span>
         <div class="card-info">
@@ -517,16 +561,21 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-85">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(85,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-85">0</span>
-          <button class="vbtn" onclick="changeVote(85,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-85">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(85,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-85">0</span>
+            <button class="vbtn" onclick="changeVote(85,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
     <div class="card" id="row-83">
-      
       <div class="card-top">
         <span class="rank-badge plain">11</span>
         <div class="card-info">
@@ -535,11 +584,17 @@
         </div>
       </div>
       <div class="card-bottom">
-        <span class="vote-count" id="count-83">0 votes</span>
-        <div class="vctrl">
-          <button class="vbtn" onclick="changeVote(83,-1)" disabled>−</button>
-          <span class="vnum" id="vnum-83">0</span>
-          <button class="vbtn" onclick="changeVote(83,1)">+</button>
+        <div class="vote-col">
+          <span class="vote-sublabel">Total Votes</span>
+          <span class="vote-count" id="count-83">0</span>
+        </div>
+        <div class="vote-col vote-col-right">
+          <span class="vote-sublabel">Your Votes</span>
+          <div class="vctrl">
+            <button class="vbtn" onclick="changeVote(83,-1)" disabled>−</button>
+            <span class="vnum" id="vnum-83">0</span>
+            <button class="vbtn" onclick="changeVote(83,1)">+</button>
+          </div>
         </div>
       </div>
     </div>
@@ -701,15 +756,7 @@
         rank === 1 ? 'rank-gold' : rank === 2 ? 'rank-silver' : rank === 3 ? 'rank-bronze' : ''
       ].filter(Boolean).join(' ');
       const votes = r.total_votes || 0;
-      const sparkleColor = rank === 1 ? '#D4A800' : rank === 2 ? '#999' : '#C07030';
-      const sparkles = rank >= 1 && rank <= 3 ? [
-        { t: 7,  r: 55, d: 0,    dur: 2.2  },
-        { t: 18, r: 32, d: 0.75, dur: 1.85 },
-        { t: 6,  r: 18, d: 1.4,  dur: 2.6  },
-        { t: 20, r: 62, d: 0.4,  dur: 1.6  },
-      ].map(s => '<span class="sparkle" style="top:' + s.t + 'px;right:' + s.r + 'px;color:' + sparkleColor + ';animation-duration:' + s.dur + 's;animation-delay:' + s.d + 's;">✦</span>').join('') : '';
       return '<div class="' + cardClass + '" id="row-' + r.id + '">' +
-        sparkles +
         '<div class="card-top">' +
           badge +
           '<div class="card-info">' +
@@ -718,11 +765,17 @@
           '</div>' +
         '</div>' +
         '<div class="card-bottom">' +
-          '<span class="vote-count" id="count-' + r.id + '">' + votes.toLocaleString() + ' vote' + (votes !== 1 ? 's' : '') + '</span>' +
-          '<div class="vctrl">' +
-            '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (myV <= 0 ? ' disabled' : '') + '>−</button>' +
-            '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
-            '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (remaining <= 0 ? ' disabled' : '') + '>+</button>' +
+          '<div class="vote-col">' +
+            '<span class="vote-sublabel">Total Votes</span>' +
+            '<span class="vote-count" id="count-' + r.id + '">' + votes.toLocaleString() + '</span>' +
+          '</div>' +
+          '<div class="vote-col vote-col-right">' +
+            '<span class="vote-sublabel">Your Votes</span>' +
+            '<div class="vctrl">' +
+              '<button class="vbtn" onclick="changeVote(' + r.id + ',-1)"' + (myV <= 0 ? ' disabled' : '') + '>−</button>' +
+              '<span class="vnum' + (myV > 0 ? ' active' : '') + '" id="vnum-' + r.id + '">' + myV + '</span>' +
+              '<button class="vbtn" onclick="changeVote(' + r.id + ',1)"' + (remaining <= 0 ? ' disabled' : '') + '>+</button>' +
+            '</div>' +
           '</div>' +
         '</div>' +
       '</div>';
